@@ -528,6 +528,28 @@ section[id] {
     line-height: 1.8;
 }
 
+/* カード内の補足（常時表示するメモ） */
+.pdf-card-info .card-note {
+    position: relative;
+    margin-top: 12px;
+    padding: 10px 14px 10px 38px;
+    font-size: .88rem;
+    line-height: 1.7;
+    color: #1f5a35;
+    background: #f1f8f1;
+    border: 1px solid #cfe5cf;
+    border-radius: 8px;
+}
+
+.pdf-card-info .card-note::before {
+    content: "✓";
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    font-weight: 700;
+    color: #3da35d;
+}
+
 .pdf-actions {
     display: flex;
     flex-wrap: wrap;
