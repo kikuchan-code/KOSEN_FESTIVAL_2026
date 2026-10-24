@@ -402,6 +402,11 @@ if (toTopBtn) {
   }
 
   function showPane(key) {
+    // 切り替え前に表示していた側のスクロール位置を覚えておく
+    const prev = Object.keys(side).find(k => side[k].pane.classList.contains('is-active'));
+    const top = prev ? side[prev].out.scrollTop : 0;
+    const left = prev ? side[prev].out.scrollLeft : 0;
+
     tabs.forEach(t => {
       const on = t.dataset.pane === key;
       t.classList.toggle('is-active', on);
@@ -409,6 +414,13 @@ if (toTopBtn) {
       t.tabIndex = on ? 0 : -1;
     });
     Object.keys(side).forEach(k => side[k].pane.classList.toggle('is-active', k === key));
+
+    // 「速度のみ」は①②の位置をそろえ、「詳細」は連動させず先頭から表示する
+    if (prev && prev !== key) {
+      const linked = mode === 'velocity';
+      side[key].out.scrollTop = linked ? top : 0;
+      side[key].out.scrollLeft = linked ? left : 0;
+    }
   }
 
   tabs.forEach(t => {
@@ -425,6 +437,7 @@ if (toTopBtn) {
     b.addEventListener('click', () => {
       mode = b.dataset.mode;
       render();
+      Object.values(side).forEach(s => { s.out.scrollTop = 0; s.out.scrollLeft = 0; });
     });
   });
 
@@ -436,11 +449,12 @@ if (toTopBtn) {
     });
   });
 
-  // 2列表示のときは縦スクロールを同期（行を見比べやすくする）
+  // 「速度のみ」のときだけ、①②の縦スクロールを連動させる（行を見比べやすくする）
+  // 「詳細」は出力の行数が違うので、連動させず別々にスクロールできる
   let syncing = false;
   [['a', 'b'], ['b', 'a']].forEach(([from, to]) => {
     side[from].out.addEventListener('scroll', () => {
-      if (syncing || !window.matchMedia('(min-width: 900px)').matches) return;
+      if (syncing || mode !== 'velocity') return;
       syncing = true;
       side[to].out.scrollTop = side[from].out.scrollTop;
       requestAnimationFrame(() => { syncing = false; });
