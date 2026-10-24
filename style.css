@@ -23,6 +23,8 @@
 html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 body {
@@ -76,6 +78,7 @@ ul {
     height: var(--header-height);
     z-index: 9999;
     background: rgba(255, 255, 255, .9);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 0, 0, .06);
 }
@@ -201,18 +204,35 @@ ul {
         height: calc(100svh - var(--header-height));
         background: white;
         box-shadow: var(--shadow);
-        transition: var(--transition);
+        visibility: hidden;
+        transition: right .3s ease, visibility 0s linear .3s;
         overflow-y: auto;
+        overscroll-behavior: contain;
     }
 
     .nav.active {
         right: 0;
+        visibility: visible;
+        transition-delay: 0s;
     }
 
     .nav-list {
-        padding: 2rem;
+        padding: 1.25rem 1.5rem 2rem;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 0;
+    }
+
+    .nav-list li + li {
+        border-top: 1px solid #eef0f6;
+    }
+
+    .nav-list a {
+        display: block;
+        padding: 14px 4px;
+    }
+
+    .nav-list a::after {
+        display: none;
     }
 
     .hamburger.open span:nth-child(1) {
@@ -351,8 +371,10 @@ ul {
     pointer-events: auto;
 }
 
-.to-top-btn:hover {
-    transform: translateY(-4px);
+@media (hover: hover) {
+    .to-top-btn:hover {
+        transform: translateY(-4px);
+    }
 }
 
 /* =========================
@@ -447,6 +469,10 @@ section[id] {
     *::after {
         transition: none !important;
     }
+
+    button.pdf-btn.is-running::before {
+        animation: none;
+    }
 }
 
 
@@ -483,9 +509,11 @@ section[id] {
                 border-color 0.2s ease;
 }
 
-.pdf-card:hover {
-    border-color: #b8bbe0;
-    box-shadow: 0 8px 24px rgba(35, 39, 85, 0.09);
+@media (hover: hover) {
+    .pdf-card:hover {
+        border-color: #b8bbe0;
+        box-shadow: 0 8px 24px rgba(35, 39, 85, 0.09);
+    }
 }
 
 .pdf-card-header {
@@ -580,8 +608,10 @@ section[id] {
     background: #46487c;
 }
 
-.pdf-view:hover {
-    background: #363862;
+@media (hover: hover) {
+    .pdf-view:hover {
+        background: #363862;
+    }
 }
 
 .pdf-download {
@@ -589,8 +619,10 @@ section[id] {
     background: #fff;
 }
 
-.pdf-download:hover {
-    background: #f0f1fb;
+@media (hover: hover) {
+    .pdf-download:hover {
+        background: #f0f1fb;
+    }
 }
 
 .pdf-btn:focus-visible,
@@ -606,10 +638,12 @@ section[id] {
 }
 
 .pdf-preview summary {
+    padding-block: 10px;
     color: #46487c;
     cursor: pointer;
     font-size: 0.92rem;
     font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .pdf-viewer {
@@ -735,10 +769,13 @@ button.pdf-btn:disabled {
 }
 
 .code-status {
-    min-height: 1.6em;
     margin: 10px 0 0;
     font-size: .85rem;
     color: #666;
+}
+
+.code-status:empty {
+    display: none;
 }
 
 /* コード表示 */
@@ -801,18 +838,529 @@ button.pdf-btn:disabled {
     color: #666;
 }
 
+/* 実行中スピナー */
+@keyframes btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+button.pdf-btn.is-running::before {
+    content: "";
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin .8s linear infinite;
+}
+
+button.pdf-btn.is-running > [aria-hidden="true"] {
+    display: none;
+}
+
+/* コード・実行結果の横スクロールをスマホで扱いやすく */
+.code-block,
+.code-output {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+}
+
+/* 見出し・説明文の折り返しを自然に */
+.section-title,
+.category-title,
+.pdf-card-info h4 {
+    text-wrap: balance;
+    word-break: auto-phrase;
+}
+
+.pdf-description,
+.note-box,
+.pdf-card-info p,
+.code-footnote {
+    word-break: auto-phrase;
+    overflow-wrap: anywhere;
+}
+
+/* スマホ専用のヒントはPCでは非表示 */
+.scroll-hint {
+    display: none;
+}
+
+/* =========================
+   Mobile Refinements
+========================= */
+
 @media (max-width: 600px) {
+
+    /* --- 見出し・本文 --- */
+    .section-title {
+        font-size: clamp(1.6rem, 7.6vw, 2.1rem);
+        line-height: 1.4;
+    }
+
+    .category-title {
+        margin-top: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .pdf-description {
+        margin: 8px 0 16px;
+        font-size: .95rem;
+    }
+
+    .note-box {
+        padding: 12px 14px;
+        font-size: .9rem;
+        line-height: 1.75;
+    }
+
+    /* --- 最接近日タイムライン（2×2） --- */
     .flyby-timeline {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .flyby-timeline li {
+        padding: 10px 6px;
     }
 
     .flyby-timeline li:nth-child(2)::after {
         display: none;
     }
 
+    .flyby-date {
+        font-size: .82rem;
+    }
+
+    /* --- カード：バッジを上に出して本文の幅を確保 --- */
+    .pdf-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .pdf-card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pdf-badge {
+        min-width: 44px;
+        height: 30px;
+        font-size: .75rem;
+    }
+
+    .pdf-card-info h4 {
+        margin-bottom: 6px;
+        font-size: 1.02rem;
+    }
+
+    .pdf-card-info p {
+        font-size: .93rem;
+    }
+
+    .pdf-card-info .card-note {
+        margin-top: 10px;
+        padding: 10px 12px 10px 34px;
+        font-size: .86rem;
+    }
+
+    .pdf-card-info .card-note::before {
+        left: 12px;
+    }
+
+    .pdf-actions {
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    .code-status {
+        font-size: .82rem;
+    }
+
+    /* --- コード・実行結果 --- */
     .code-block,
     .code-output {
-        font-size: .76rem;
+        max-height: min(60vh, 420px);
         padding: 12px 14px;
+        font-size: .76rem;
+        line-height: 1.65;
+        tab-size: 2;
+    }
+
+    .scroll-hint {
+        display: block;
+    }
+
+    .code-footnote {
+        font-size: .82rem;
+    }
+
+    /* iOS Safari はiframe内のPDFを1ページ目しか表示できないため、
+       ページ内プレビューを隠して「ブラウザで閲覧」に誘導する */
+    .pdf-preview:has(.pdf-viewer) {
+        display: none;
+    }
+
+    /* --- Topへ戻る：ホームバーと重ならないように --- */
+    .to-top-btn {
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 360px) {
+    .flyby-planet {
+        font-size: .95rem;
+    }
+
+    .flyby-date {
+        font-size: .78rem;
+    }
+
+    .pdf-btn {
+        padding-inline: 12px;
+        font-size: .9rem;
+    }
+}
+
+
+/* ==========================================================================
+   Compare（2つの実行結果の比較）
+   ========================================================================== */
+
+.compare-actions {
+    margin-top: 0;
+}
+
+.compare {
+    margin-top: 8px;
+}
+
+.compare-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    background: #eeeffa;
+    border-radius: 10px;
+}
+
+.compare-tab {
+    min-height: 44px;
+    padding: 8px 10px;
+    color: #46487c;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.compare-tab.is-active {
+    color: #fff;
+    background: #46487c;
+    box-shadow: 0 2px 8px rgba(35, 39, 85, .2);
+}
+
+.compare-tab:focus-visible {
+    outline: 3px solid #8c91e8;
+    outline-offset: 2px;
+}
+
+.compare-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.compare-pane {
+    display: none;
+    min-width: 0;
+}
+
+.compare-pane.is-active {
+    display: block;
+}
+
+.compare-pane-title {
+    display: none;
+    margin: 0 0 8px;
+    color: #30335f;
+    font-size: 1rem;
+}
+
+.compare-out {
+    height: min(60vh, 460px);
+    margin: 0;
+    padding: 14px 16px;
+    overflow: auto;
+    overscroll-behavior-x: contain;
+    color: #1f2a1f;
+    background: #f1f8f1;
+    border: 1px solid #cfe5cf;
+    border-left: 4px solid #3da35d;
+    border-radius: 8px;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Noto Sans Mono CJK JP", monospace;
+    font-size: .8rem;
+    line-height: 1.7;
+    tab-size: 4;
+    white-space: pre;
+}
+
+.compare-out.is-empty {
+    color: #888;
+    background: #f7f7fb;
+    border-color: #e1e3ef;
+    border-left-color: #c9cbe0;
+    white-space: normal;
+}
+
+.compare-out.is-error {
+    color: #5a1f1f;
+    background: #fdf1f1;
+    border-color: #efc6c6;
+    border-left-color: #d64545;
+}
+
+.compare-out:focus-visible {
+    outline: 3px solid var(--color-accent-light);
+    outline-offset: 3px;
+}
+
+/* 幅があれば2列で並べて表示（タブは不要） */
+@media (min-width: 900px) {
+    .compare-tabs {
+        display: none;
+    }
+
+    .compare-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 0;
+    }
+
+    .compare-pane,
+    .compare-pane.is-active {
+        display: block;
+    }
+
+    .compare-pane-title {
+        display: block;
+    }
+}
+
+@media (max-width: 600px) {
+    .compare-tab {
+        font-size: .82rem;
+        padding-inline: 6px;
+    }
+
+    .compare-out {
+        padding: 12px 14px;
+        font-size: .76rem;
+        line-height: 1.65;
+        tab-size: 2;
+    }
+}
+
+
+/* 実行ボタン＋表示切り替え（速度のみ / 詳細）を1行にまとめる */
+.compare-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    margin-top: 4px;
+}
+
+.compare-toolbar .compare-actions {
+    margin: 0;
+}
+
+.compare-pairs {
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 4px;
+    padding: 4px;
+    background: #f4f5fd;
+    border: 1px solid #e1e3ef;
+    border-radius: 999px;
+}
+
+.compare-pair {
+    min-height: 40px;
+    padding: 6px 24px;
+    color: #46487c;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    font: inherit;
+    font-size: .92rem;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s ease, color .2s ease;
+}
+
+.compare-pair.is-active {
+    color: #fff;
+    background: #46487c;
+}
+
+.compare-pair:focus-visible {
+    outline: 3px solid #8c91e8;
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    .compare-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .compare-pairs {
+        display: grid;
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* 速度の差の表 */
+.compare-diff {
+    margin-top: 28px;
+}
+
+.compare-diff[hidden] {
+    display: none;
+}
+
+.compare-diff-title {
+    margin: 0 0 10px;
+    color: #30335f;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.diff-scroll {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border: 1px solid #e1e3ef;
+    border-radius: 10px;
+}
+
+.diff-table {
+    width: 100%;
+    min-width: 340px;
+    border-collapse: collapse;
+    font-size: .88rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.diff-table th,
+.diff-table td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid #eceef6;
+}
+
+.diff-table thead th {
+    color: #46487c;
+    background: #f4f5fd;
+    font-size: .78rem;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.diff-table tbody tr:last-child th,
+.diff-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.diff-table tbody th {
+    position: sticky;
+    left: 0;
+    color: #30335f;
+    background: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.diff-table thead th:first-child {
+    position: sticky;
+    left: 0;
+}
+
+.diff-table td.is-na {
+    color: #aaa;
+}
+
+.diff-0 { background: #e6f5ea; color: #1f5a35; }
+.diff-s { background: #f0f7dc; color: #4b5a1f; }
+.diff-m { background: #fff6d6; color: #6a5412; }
+.diff-l { background: #ffe8cf; color: #7a3f0c; }
+.diff-x { background: #fddede; color: #7a1f1f; }
+
+.diff-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: .8rem;
+    color: #666;
+}
+
+.diff-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.diff-notes {
+    margin: 14px 0 0;
+    padding-left: 1.2em;
+    font-size: .85rem;
+    line-height: 1.7;
+    color: #555;
+    word-break: auto-phrase;
+    overflow-wrap: anywhere;
+}
+
+.diff-notes li + li {
+    margin-top: 4px;
+}
+
+.diff-chip {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+    .diff-table th,
+    .diff-table td {
+        padding: 9px 4px;
+    }
+
+    .diff-table {
+        font-size: .82rem;
+    }
+
+    .diff-table thead th {
+        font-size: .72rem;
     }
 }

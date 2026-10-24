@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#46487c" />
 
-    <title>ボイジャー2号 スイングバイ計算｜文化祭展示 | S.K. Base Study Hub</title>
+    <title>ボイジャー2号の軌道計算｜文化祭展示 | S.K. Base Study Hub</title>
     <meta name="description" content="ボイジャー2号が木星・土星・天王星・海王星で行ったスイングバイを、Pythonで再現。コードの閲覧・コピー・ブラウザ上での実行ができる文化祭展示ページです。">
 
     <link rel="stylesheet" href="style.css" />
@@ -25,7 +25,7 @@
                 <span class="logo-title"><em class="logo-em">S.K.</em> Base Study Hub</span>
             </a>
 
-            <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+            <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-controls="nav" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -35,6 +35,7 @@
                 <ul class="nav-list">
                     <li><a href="#overview">展示の概要</a></li>
                     <li><a href="#programs">プログラム</a></li>
+                    <li><a href="#compare">結果の比較</a></li>
                     <li><a href="#pdf">資料（PDF）</a></li>
                     <li><a href="https://study.kikuchan-code.workers.dev/">ホームにもどる</a></li>
                 </ul>
@@ -45,18 +46,18 @@
     <main class="main-content">
 
         <!-- 概要 -->
-        <section class="section" id="overview">
+        <section class="section-tight" id="overview">
             <div class="container">
 
                 <nav class="breadcrumb">
                     <a href="https://study.kikuchan-code.workers.dev/">ホーム</a> &gt; <span>文化祭展示</span>
                 </nav>
 
-                <h2 class="section-title">ボイジャー2号 スイングバイ計算</h2>
+                <h2 class="section-title">ボイジャー2号の軌道計算</h2>
 
                 <p class="pdf-description">
                     ボイジャー2号は、木星・土星・天王星・海王星を順に通過する旅の中で、各惑星の重力を利用した「スイングバイ」で軌道を変えてきました。
-                    この展示では、そのスイングバイを2つのPythonプログラムで再現しています。コードはそのまま読めて、コピー・ダウンロード、ブラウザ上での実行もできます。
+                    この展示では、そのスイングバイを2つのPythonプログラムで再現しています。コードはそのまま読めて、コピー・ダウンロードができ、下の「実行結果を比べる」からブラウザ上で実行もできます。
                 </p>
 
                 <ol class="flyby-timeline" aria-label="各惑星への最接近日">
@@ -74,14 +75,15 @@
                 <h3 class="category-title">Pythonプログラム</h3>
 
                 <p class="note-box">
-                    <strong>注：</strong>「軌道計算版」は惑星間を等速直線運動と仮定しているため、太陽の重力による減速を考慮していません。
-                    そのため木星では実測と近い値になりますが、土星以降は「実測データ版」と値が離れていきます。2つを実行して見比べてみてください。
+                    <strong>注：</strong>②「軌道計算版」は惑星間を等速直線運動と仮定しているため、太陽の重力による減速を考慮していません。
+                    そのため木星では実測と近い値になりますが、土星以降は「実測データ版」と値が離れていきます。下の「実行結果を比べる」で、①との差を確認できます。
                 </p>
 
                 <div class="pdf-list">
 
                     <!-- プログラム 1 -->
-                    <article class="pdf-card code-card" data-code-card data-src="./py/swing-by_measurement_data.py">
+                    <article class="pdf-card code-card" data-code-card data-id="1" data-short="① 実測データ版"
+                        data-src="./py/swing-by_measurement_data.py">
                         <div class="pdf-card-header">
                             <span class="pdf-badge">PY</span>
                             <div class="pdf-card-info">
@@ -91,10 +93,6 @@
                         </div>
 
                         <div class="pdf-actions">
-                            <button type="button" class="pdf-btn pdf-view" data-action="run">
-                                <span aria-hidden="true">▶</span>
-                                ブラウザで実行
-                            </button>
                             <button type="button" class="pdf-btn pdf-download" data-action="copy">
                                 <span aria-hidden="true">⧉</span>
                                 コードをコピー
@@ -111,18 +109,16 @@
                             <summary>コードを表示</summary>
                             <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
                         </details>
-
-                        <pre class="code-output" aria-label="実行結果" hidden></pre>
                     </article>
 
                     <!-- プログラム 2 -->
-                    <article class="pdf-card code-card" data-code-card data-src="./py/swing-by_velocity_only.py">
+                    <article class="pdf-card code-card" data-code-card data-id="2" data-short="② 軌道計算版"
+                        data-src="./py/swing-by_calculate.py">
                         <div class="pdf-card-header">
                             <span class="pdf-badge">PY</span>
                             <div class="pdf-card-info">
                                 <h4>② 軌道計算版（双曲線軌道のシミュレーション）</h4>
-                                <p>初期位置・速度から、離心率・最接近距離・無限遠速度・散乱角などを計算し、ニュートン法で双曲線異常を解いてスイングバイ後の位置と速度を求めます。木星から海王星まで順につないで計算し、比軌道エネルギーが保存されているかも確認します。
-                                </p>
+                                <p>初期位置・速度から、離心率・最接近距離・無限遠速度・散乱角などを計算し、ニュートン法で双曲線異常を解いてスイングバイ後の位置と速度を求めます。木星から海王星まで順につないで計算し、比軌道エネルギーが保存されているかも確認します。</p>
                                 <p class="card-note">
                                     実行すると、スイングバイ前後の比軌道エネルギーの差が最大でも約10<sup>-13</sup> km<sup>2</sup>/s<sup>2</sup>
                                     とごく小さく、エネルギーが保存されていることが確認できます。
@@ -131,34 +127,105 @@
                         </div>
 
                         <div class="pdf-actions">
-                            <button type="button" class="pdf-btn pdf-view" data-action="run">
-                                <span aria-hidden="true">▶</span>
-                                ブラウザで実行
-                            </button>
                             <button type="button" class="pdf-btn pdf-download" data-action="copy">
                                 <span aria-hidden="true">⧉</span>
                                 コードをコピー
                             </button>
-                            <a href="./py/swing-by_velocity_only.py" class="pdf-btn pdf-download"
-                                download="swing-by_velocity_only.py">
+                            <a href="./py/swing-by_calculate.py" class="pdf-btn pdf-download"
+                                download="swing-by_calculate.py">
                                 <span aria-hidden="true">↓</span>
                                 .py をダウンロード
                             </a>
                         </div>
 
-                        <!-- 実行状況の表示専用（script.js が書き換えます。説明文は入れない） -->
+                        <!-- 「コピーしました」の表示専用（script.js が書き換えます。説明文は入れない） -->
                         <p class="code-status" role="status" aria-live="polite"></p>
 
                         <details class="pdf-preview">
                             <summary>コードを表示</summary>
                             <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
                         </details>
-
-                        <pre class="code-output" aria-label="実行結果" hidden></pre>
                     </article>
 
                 </div>
-                <p class="code-footnote">※「ブラウザで実行」は初回のみ実行環境（Pyodide / NumPy）を読み込むため、数秒〜数十秒かかることがあります。</p>
+                <p class="code-footnote scroll-hint">※ コードや実行結果は左右にスクロールできます。スマホを横向きにすると、より広く表示されます。</p>
+            </div>
+        </section>
+
+        <!-- 結果の比較 -->
+        <section class="section section-tight" id="compare">
+            <div class="container">
+                <h3 class="category-title">実行結果を比べる</h3>
+
+                <p class="pdf-description">
+                    ①と②を続けて実行して並べて表示し、速度の差を表にまとめます。②は軌道パラメータやエネルギーも出力するため、まず「速度のみ」で①と見比べ、そのあと「詳細」に切り替えて中身を確認してみてください。
+                </p>
+
+                <div class="compare-toolbar">
+                    <div class="pdf-actions compare-actions">
+                        <button type="button" class="pdf-btn pdf-view" id="runBoth">
+                            <span aria-hidden="true">▶</span>
+                            <span id="runBothLabel">①と②を実行して比較</span>
+                        </button>
+                    </div>
+                    <div class="compare-pairs" role="group" aria-label="表示する内容">
+                        <button type="button" class="compare-pair is-active" aria-pressed="true"
+                            data-mode="velocity">速度のみ</button>
+                        <button type="button" class="compare-pair" aria-pressed="false"
+                            data-mode="detail">詳細</button>
+                    </div>
+                </div>
+                <p class="code-status" id="compareStatus" role="status" aria-live="polite"></p>
+                <p class="code-footnote">※ 初回のみ実行環境（Pyodide / NumPy）を読み込むため、数秒〜数十秒かかることがあります。</p>
+
+                <div class="compare" id="comparePanel">
+                    <div class="compare-tabs" role="tablist" aria-label="表示する結果の切り替え">
+                        <button type="button" class="compare-tab is-active" role="tab" id="tab-a"
+                            aria-selected="true" aria-controls="cmp-a" data-pane="a">① 実測データ版</button>
+                        <button type="button" class="compare-tab" role="tab" id="tab-b"
+                            aria-selected="false" aria-controls="cmp-b" data-pane="b">② 軌道計算版</button>
+                    </div>
+
+                    <div class="compare-grid">
+                        <div class="compare-pane is-active" id="cmp-a" role="tabpanel" aria-labelledby="tab-a">
+                            <h4 class="compare-pane-title">① 実測データ版</h4>
+                            <pre class="compare-out" tabindex="0">まだ実行されていません。</pre>
+                        </div>
+                        <div class="compare-pane" id="cmp-b" role="tabpanel" aria-labelledby="tab-b">
+                            <h4 class="compare-pane-title">② 軌道計算版</h4>
+                            <pre class="compare-out" tabindex="0">まだ実行されていません。</pre>
+                        </div>
+                    </div>
+
+                    <div class="compare-diff" id="compareDiff" hidden>
+                        <h4 class="compare-diff-title">①と②で、速度がどれだけ違うか（km/s）</h4>
+                        <div class="diff-scroll" tabindex="0">
+                            <table class="diff-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">惑星</th>
+                                        <th scope="col">近づく直前<br>の速度の差</th>
+                                        <th scope="col">通過した直後<br>の速度の差</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="diffBody"></tbody>
+                            </table>
+                        </div>
+                        <ul class="diff-legend" aria-label="色の目安">
+                            <li><i class="diff-chip diff-0"></i>ほぼ一致</li>
+                            <li><i class="diff-chip diff-s"></i>0.01未満</li>
+                            <li><i class="diff-chip diff-m"></i>0.1未満</li>
+                            <li><i class="diff-chip diff-l"></i>1未満</li>
+                            <li><i class="diff-chip diff-x"></i>1以上</li>
+                        </ul>
+                        <ul class="diff-notes">
+                            <li>数字は、①（実測）と②（計算）の速度ベクトルの差の大きさです。0に近いほど②が実測に近いことを表します。</li>
+                            <li><strong>近づく直前</strong>：①は実測値、②は前の惑星の計算結果を引き継いだ値です。惑星の間は等速直線運動と仮定して太陽の重力を無視しているため、土星以降はずれが大きくなります（木星は同じ初期値を使うので0）。</li>
+                            <li><strong>通過した直後</strong>：その惑星の双曲線軌道を計算した結果が、実測とどれだけずれたかを表します。</li>
+                            <li>太陽基準・惑星基準のどちらで比べても差は同じ大きさになるため、1つにまとめています。</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
 

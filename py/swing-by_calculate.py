@@ -258,8 +258,7 @@ for planet, result, v_in, vi, vf in results:
     print("スイングバイ直後の速度（惑星基準） =", result["v"])
     print("スイングバイ直後の速度（太陽基準） =", result["v"] + vf)
 
-    # 必要に応じて、以下のコメントアウトを解除して表示
-    print("比軌道エネルギー =", result["epsilon"])
+    # 各種計算結果を表示
     print("比角運動量ベクトル =", result["h_vec"])
     print("比角運動量の大きさ =", result["h"])
     print("離心率ベクトル =", result["e_vec"])
@@ -268,7 +267,6 @@ for planet, result, v_in, vi, vf in results:
     print("無限遠速度 =", result["v_inf"], "km/s")
     print("散乱角 =", np.degrees(result["delta"]), "deg")
     print("終了時の位置ベクトル =", result["r"], "km")
-    # 軌道エネルギーはスイングバイ前後で変わらない（計算が正しいかを確かめる）
     print("初期比軌道エネルギー =", result["epsilon"], "km^2/s^2")
     print("終了時比軌道エネルギー =", result["epsilon_final"], "km^2/s^2")
     print("比軌道エネルギーの差 =", result["epsilon_final"] - result["epsilon"], "km^2/s^2")
@@ -276,13 +274,3 @@ for planet, result, v_in, vi, vf in results:
 # 海王星スイングバイ終了後の太陽基準速度
 v_end = resultN["v"] + vf_N
 print(f"\nスイングバイ終了後速度（太陽基準）：{v_end}")
-
-
-"""
-print("初期比軌道エネルギー:", resultJ["epsilon"])
-print(
-    "終了時比軌道エネルギー:",
-    np.linalg.norm(resultJ["v"])**2 / 2
-    - mu_J / np.linalg.norm(resultJ["r"])
-)
-"""

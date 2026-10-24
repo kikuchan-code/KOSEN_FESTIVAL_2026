@@ -41,13 +41,19 @@ const hamburger = document.getElementById('hamburger');
 function closeMenu() {
   nav?.classList.remove('active');
   hamburger?.classList.remove('open');
+  hamburger?.setAttribute('aria-expanded', 'false');
 }
 
 hamburger?.addEventListener('click', (e) => {
   e.stopPropagation();
 
   nav?.classList.toggle('active');
-  hamburger.classList.toggle('open');
+  const isOpen = hamburger.classList.toggle('open');
+  hamburger.setAttribute('aria-expanded', String(isOpen));
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeMenu();
 });
 
 nav?.addEventListener('click', (e) => {
@@ -150,9 +156,7 @@ if (toTopBtn) {
 
   cards.forEach(card => {
     const codeEl = card.querySelector('.code-block code');
-    const outEl = card.querySelector('.code-output');
     const statusEl = card.querySelector('.code-status');
-    const runBtn = card.querySelector('[data-action="run"]');
     const copyBtn = card.querySelector('[data-action="copy"]');
     let code = '';
 
@@ -180,17 +184,17 @@ if (toTopBtn) {
       setTimeout(() => { if (statusEl.textContent === 'コードをコピーしました') setStatus(''); }, 2500);
     });
 
-    runBtn?.addEventListener('click', async () => {
+    // 実行ボタンは「実行結果を比べる」の1か所だけ。結果は code-result イベントで渡す
+    const run = async () => {
       await ready;
-      if (!code) return;
-
-      runBtn.disabled = true;
-      outEl.classList.remove('is-error');
-      setStatus('実行環境を準備しています…（初回は時間がかかります）');
+      const finish = (text, error) => {
+        card.dispatchEvent(new CustomEvent('code-result', { detail: { text, error } }));
+        return !error;
+      };
+      if (!code) return finish('エラー: コードを読み込めませんでした。', true);
 
       try {
         const py = await getPyodide();
-        setStatus('実行中…');
 
         const lines = [];
         py.setStdout({ batched: line => lines.push(line) });
@@ -202,19 +206,268 @@ if (toTopBtn) {
         } finally {
           globals.destroy();
         }
-
-        outEl.hidden = false;
-        outEl.textContent = lines.join('\n');
-        setStatus('実行が完了しました');
-        outEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return finish(lines.join('\n'), false);
       } catch (err) {
-        outEl.hidden = false;
-        outEl.classList.add('is-error');
-        outEl.textContent = 'エラー: ' + (err && err.message ? err.message : err);
-        setStatus('実行に失敗しました');
-      } finally {
-        runBtn.disabled = false;
+        return finish('エラー: ' + (err && err.message ? err.message : err), true);
       }
+    };
+
+    card.runCode = run;
+  });
+})();
+
+
+// ==========================================
+// 実行結果の比較（①を基準に、②または③と並べて表示）
+// スマホはタブで切り替え、幅があれば2列で表示
+// ==========================================
+
+(function () {
+  const panel = document.getElementById('comparePanel');
+  const runBothBtn = document.getElementById('runBoth');
+  const runBothLabel = document.getElementById('runBothLabel');
+  const statusEl = document.getElementById('compareStatus');
+  const modeBtns = [...document.querySelectorAll('.compare-pair')];
+  const cardEls = [...document.querySelectorAll('[data-code-card][data-id]')];
+  if (!panel || !cardEls.length) return;
+
+  const cards = Object.fromEntries(cardEls.map(c => [c.dataset.id, c]));
+  const results = {};            // id -> { text, error }
+  const BASE = '1';              // 常に左に置く基準
+  const other = '2';             // 比較相手（②）
+  let mode = 'velocity';         // 'velocity'（速度のみ） | 'detail'（詳細）
+
+  const circled = { 1: '①', 2: '②', 3: '③' };
+  const tabs = [...panel.querySelectorAll('.compare-tab')];
+  const side = {
+    a: {
+      pane: document.getElementById('cmp-a'),
+      title: document.querySelector('#cmp-a .compare-pane-title'),
+      out: document.querySelector('#cmp-a .compare-out'),
+      tab: document.getElementById('tab-a')
+    },
+    b: {
+      pane: document.getElementById('cmp-b'),
+      title: document.querySelector('#cmp-b .compare-pane-title'),
+      out: document.querySelector('#cmp-b .compare-out'),
+      tab: document.getElementById('tab-b')
+    }
+  };
+
+  const shortName = id => cards[id]?.dataset.short || id;
+
+  // 「速度のみ」表示：★見出しと速度の行、終了後速度だけを残す
+  function velocityOnly(text) {
+    const out = [];
+    let inPlanet = false;
+    text.split('\n').forEach(line => {
+      if (line.startsWith('★')) {
+        if (out.length) out.push('');
+        out.push(line);
+        inPlanet = true;
+        return;
+      }
+      if (line.startsWith(FINAL_KEY)) {
+        if (out.length) out.push('');
+        out.push(line);
+        inPlanet = false;
+        return;
+      }
+      if (inPlanet && ITEMS.some(k => line.startsWith(k))) out.push(line);
+    });
+    return out.join('\n');
+  }
+
+  function displayText(r) {
+    if (r.error || mode === 'detail') return r.text;
+    return velocityOnly(r.text) || r.text;
+  }
+
+  // ---- 出力テキストから速度ベクトルを取り出して差を計算する ----
+  const diffWrap = document.getElementById('compareDiff');
+  const diffBody = document.getElementById('diffBody');
+  const NUM = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
+  const ITEMS = [
+    'スイングバイ直前の速度（太陽基準）',
+    'スイングバイ直前の速度（惑星基準）',
+    'スイングバイ直後の速度（惑星基準）',
+    'スイングバイ直後の速度（太陽基準）'
+  ];
+  // 差を表示する項目（ITEMS の番号）：1=直前（惑星基準）, 2=直後（惑星基準）
+  // 太陽基準は同じ惑星速度を足すだけなので、差は惑星基準と同じ大きさになる
+  const DIFF_COLS = [1, 2];
+  const FINAL_KEY = 'スイングバイ終了後速度';
+  const PLANETS = ['木星', '土星', '天王星', '海王星'];
+
+  function vecOf(line) {
+    const i = line.indexOf('[');
+    if (i < 0) return null;
+    const nums = line.slice(i).match(NUM);
+    return nums && nums.length >= 3 ? nums.slice(0, 3).map(Number) : null;
+  }
+
+  function parseVelocities(text) {
+    const data = { final: null };
+    let planet = null;
+    text.split('\n').forEach(line => {
+      const m = line.match(/^★\s*(.+?)でのスイングバイ/);
+      if (m) { planet = m[1]; data[planet] = {}; return; }
+      if (line.startsWith(FINAL_KEY)) { data.final = vecOf(line); planet = null; return; }
+      if (!planet) return;
+      ITEMS.forEach((key, idx) => {
+        if (line.startsWith(key)) {
+          const v = vecOf(line);
+          if (v) data[planet][idx] = v;
+        }
+      });
+    });
+    return data;
+  }
+
+  const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+  function fmtDiff(d) {
+    if (d < 1e-6) return '0';
+    if (d >= 100) return d.toFixed(0);
+    return d.toPrecision(3);
+  }
+
+  function diffClass(d) {
+    if (d < 1e-6) return 'diff-0';
+    if (d < 0.01) return 'diff-s';
+    if (d < 0.1) return 'diff-m';
+    if (d < 1) return 'diff-l';
+    return 'diff-x';
+  }
+
+  function cell(tag, text, cls) {
+    const el = document.createElement(tag);
+    el.textContent = text;
+    if (cls) el.className = cls;
+    return el;
+  }
+
+  function renderDiff() {
+    if (!diffWrap || !diffBody) return;
+    const ra = results[BASE];
+    const rb = results[other];
+    if (!ra || !rb || ra.error || rb.error) {
+      diffWrap.hidden = true;
+      return;
+    }
+    const A = parseVelocities(ra.text);
+    const B = parseVelocities(rb.text);
+    diffBody.replaceChildren();
+
+    PLANETS.forEach(p => {
+      if (!A[p] || !B[p]) return;
+      const tr = document.createElement('tr');
+      tr.appendChild(cell('th', p)).scope = 'row';
+      DIFF_COLS.forEach(idx => {
+        const a = A[p][idx], b = B[p][idx];
+        if (!a || !b) { tr.appendChild(cell('td', '—', 'is-na')); return; }
+        const d = dist(a, b);
+        tr.appendChild(cell('td', fmtDiff(d), diffClass(d)));
+      });
+      diffBody.appendChild(tr);
+    });
+
+    diffWrap.hidden = diffBody.children.length === 0;
+  }
+
+  function fill(sideKey, id) {
+    const s = side[sideKey];
+    const label = shortName(id);
+    s.title.textContent = label;
+    s.tab.textContent = label;
+
+    const r = results[id];
+    s.out.classList.toggle('is-empty', !r);
+    s.out.classList.toggle('is-error', !!(r && r.error));
+    s.out.textContent = r ? displayText(r) : 'まだ実行されていません。';
+    s.out.scrollTop = 0;
+    s.out.scrollLeft = 0;
+  }
+
+  function render() {
+    fill('a', BASE);
+    fill('b', other);
+    runBothLabel.textContent = `${circled[BASE]}と${circled[other]}を実行して比較`;
+    renderDiff();
+    modeBtns.forEach(b => {
+      const on = b.dataset.mode === mode;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
+
+  function showPane(key) {
+    tabs.forEach(t => {
+      const on = t.dataset.pane === key;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    Object.keys(side).forEach(k => side[k].pane.classList.toggle('is-active', k === key));
+  }
+
+  tabs.forEach(t => {
+    t.addEventListener('click', () => showPane(t.dataset.pane));
+    t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const next = tabs[(tabs.indexOf(t) + 1) % tabs.length];
+      next.focus();
+      showPane(next.dataset.pane);
     });
   });
+
+  modeBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      mode = b.dataset.mode;
+      render();
+    });
+  });
+
+  // 各カードの実行結果を記録し、表示中の組み合わせに反映する
+  Object.entries(cards).forEach(([id, card]) => {
+    card.addEventListener('code-result', e => {
+      results[id] = e.detail;
+      render();
+    });
+  });
+
+  // 2列表示のときは縦スクロールを同期（行を見比べやすくする）
+  let syncing = false;
+  [['a', 'b'], ['b', 'a']].forEach(([from, to]) => {
+    side[from].out.addEventListener('scroll', () => {
+      if (syncing || !window.matchMedia('(min-width: 900px)').matches) return;
+      syncing = true;
+      side[to].out.scrollTop = side[from].out.scrollTop;
+      requestAnimationFrame(() => { syncing = false; });
+    }, { passive: true });
+  });
+
+  runBothBtn?.addEventListener('click', async () => {
+    const pair = [BASE, other];
+    runBothBtn.disabled = true;
+    runBothBtn.classList.add('is-running');
+    try {
+      let allOk = true;
+      for (const id of pair) {
+        statusEl.textContent = `${circled[id]}を実行しています…（初回は実行環境の読み込みに時間がかかります）`;
+        const ok = await cards[id].runCode();
+        allOk = allOk && ok;
+      }
+      statusEl.textContent = allOk
+        ? `${circled[BASE]}と${circled[other]}の実行が完了しました。見比べてみましょう。`
+        : '一部の実行に失敗しました。';
+      showPane('a');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } finally {
+      runBothBtn.disabled = false;
+      runBothBtn.classList.remove('is-running');
+    }
+  });
+
+  render();
 })();
