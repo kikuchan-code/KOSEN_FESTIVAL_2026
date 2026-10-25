@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="google-site-verification" content="WBH4i080vt8nFJzC-Zt7LOOeCTevCIOCo4kux-gtdSE" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#46487c" />
 
     <title>ボイジャー2号の軌道計算｜高専祭展示 | S.K. Base Study Hub</title>
@@ -47,7 +47,7 @@
     <main class="main-content">
 
         <!-- 概要 -->
-        <section class="section-tight" id="overview">
+        <section class="section" id="overview">
             <div class="container">
 
                 <nav class="breadcrumb">
@@ -58,7 +58,7 @@
 
                 <p class="pdf-description">                
                     総合課題実習3の課題として、わたしたち「チームK」はボイジャー2号の軌道について、調査しました。ボイジャー2号は、木星・土星・天王星・海王星を順に通過する旅の中で、各惑星の重力を利用した「スイングバイ」で軌道を変えてきました。
-                    この展示では、そのスイングバイを2つのPythonプログラムで再現しています。コードはそのまま読めて、コピー・ダウンロードができ、下の「実行結果を比べる」からブラウザ上で実行もできます。
+                    この展示では、そのスイングバイを2つのPythonプログラムで再現し、3つ目のプログラムで両者の速度のちがいを計算しています。コードはそのまま読めて、コピー・ダウンロードができ、下の「実行結果を比べる」からブラウザ上で実行もできます。各惑星の計算に使ったデータの時間（シミュレーション期間）も、実行結果に表示されます。
                 </p>
 
                 <ol class="flyby-timeline" aria-label="各惑星への最接近日">
@@ -77,7 +77,7 @@
 
                 <p class="note-box">
                     <strong>注：</strong>②「軌道計算版」は惑星間を等速直線運動と仮定しているため、太陽の重力による減速を考慮していません。
-                    そのため木星では実測と近い値になりますが、土星以降は「実測データ版」と値が離れていきます。下の「実行結果を比べる」で、①との差を確認できます。
+                    そのため木星では実測と近い値になりますが、土星以降は「実測データ版」と値が離れていきます。下の「実行結果を比べる」で、③が計算した①との差を確認できます。
                 </p>
 
                 <div class="pdf-list">
@@ -148,8 +148,41 @@
                         </details>
                     </article>
 
+                    <!-- プログラム 3 -->
+                    <article class="pdf-card code-card" data-code-card data-id="3" data-short="③ 差の計算版"
+                        data-src="./py/swing-by_compare.py" data-requires="1,2">
+                        <div class="pdf-card-header">
+                            <span class="pdf-badge">PY</span>
+                            <div class="pdf-card-info">
+                                <h4>③ 差の計算版（速度のちがいを計算）</h4>
+                                <p>①と②を読み込み、惑星ごとに「速度ベクトルの差の大きさ」と「速さの差」をスイングバイの直前・直後で計算します。計算に使ったシミュレーションの時間も合わせて表示します。</p>
+                                <p class="card-note card-note-info">
+                                    ③は①②の結果を使うため、手元で動かすときは3つの .py ファイルを同じフォルダに置いてください。ブラウザ上では「実行して比較」を押すと自動でつながります。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pdf-actions">
+                            <button type="button" class="pdf-btn pdf-download" data-action="copy">
+                                <span aria-hidden="true">⧉</span>
+                                コードをコピー
+                            </button>
+                            <a href="./py/swing-by_compare.py" class="pdf-btn pdf-download"
+                                download="swing-by_compare.py">
+                                <span aria-hidden="true">↓</span>
+                                .py をダウンロード
+                            </a>
+                        </div>
+                        <p class="code-status" role="status" aria-live="polite"></p>
+
+                        <details class="pdf-preview">
+                            <summary>コードを表示</summary>
+                            <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
+                        </details>
+                    </article>
+
                 </div>
-                <p class="code-footnote scroll-hint">※ コードや実行結果は左右にスクロールできます。スマホを横向きにすると、より広く表示されます。</p>
+                <p class="code-footnote scroll-hint">※ コードは左右にスクロールできます。スマホを横向きにすると、より広く表示されます。</p>
             </div>
         </section>
 
@@ -159,7 +192,7 @@
                 <h3 class="category-title">実行結果を比べる</h3>
 
                 <p class="pdf-description">
-                    ①と②を続けて実行して並べて表示し、速度の差を表にまとめます。②は軌道パラメータやエネルギーも出力するため、まず「速度のみ」で①と見比べ、そのあと「詳細」に切り替えて中身を確認してみてください。
+                    ①と②を続けて実行して並べて表示し、③が速度の差を計算して表にまとめます。②は軌道パラメータやエネルギーも出力するため、まず「速度のみ」で①と見比べ、そのあと「詳細」に切り替えて中身を確認してみてください。各惑星の「データの時間」「シミュレーションの時間」も、結果と表に表示されます。
                 </p>
 
                 <div class="compare-toolbar">
@@ -199,19 +232,26 @@
                     </div>
 
                     <div class="compare-diff" id="compareDiff" hidden>
-                        <h4 class="compare-diff-title">①と②で、速度がどれだけ違うか（km/s）</h4>
+                        <h4 class="compare-diff-title">①と②で、速度がどれだけ違うか（③の計算結果・単位 km/s）</h4>
                         <div class="diff-scroll" tabindex="0">
                             <table class="diff-table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">惑星</th>
-                                        <th scope="col">スイングバイ直前<br>の速度の差</th>
-                                        <th scope="col">スイングバイ直後<br>の速度の差</th>
+                                        <th scope="col" rowspan="2">惑星と<br>シミュレーションの時間</th>
+                                        <th scope="colgroup" colspan="2">速度ベクトルの差<br>|Δv|</th>
+                                        <th scope="colgroup" colspan="2">速さの差<br>Δ速さ（② − ①）</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">スイングバイ<br>直前</th>
+                                        <th scope="col">スイングバイ<br>直後</th>
+                                        <th scope="col">スイングバイ<br>直前</th>
+                                        <th scope="col">スイングバイ<br>直後</th>
                                     </tr>
                                 </thead>
                                 <tbody id="diffBody"></tbody>
                             </table>
                         </div>
+                        <p class="diff-final" id="diffFinal" hidden></p>
                         <ul class="diff-legend" aria-label="色の目安">
                             <li><i class="diff-chip diff-0"></i>ほぼ一致</li>
                             <li><i class="diff-chip diff-s"></i>0.01未満</li>
@@ -220,11 +260,16 @@
                             <li><i class="diff-chip diff-x"></i>1以上</li>
                         </ul>
                         <ul class="diff-notes">
-                            <li>数字は、①（実測）と②（計算）の速度ベクトルの差の大きさです。0に近いほど②が実測に近いことを表します。</li>
-                            <li><strong>近づく直前</strong>：①は実測値、②は前の惑星の計算結果を引き継いだ値です。惑星の間は等速直線運動と仮定して太陽の重力を無視しているため、土星以降はずれが大きくなります（木星は同じ初期値を使うので0）。</li>
-                            <li><strong>通過した直後</strong>：その惑星の双曲線軌道を計算した結果が、実測とどれだけずれたかを表します。</li>
-                            <li>太陽基準・惑星基準のどちらで比べても差は同じ大きさになるため、1つにまとめています。</li>
+                            <li><strong>速度ベクトルの差 |Δv|</strong>：向きも速さも含めた、ずれの総量です。0に近いほど②が実測（①）に近いことを表します。太陽基準・惑星基準のどちらで比べても同じ値になります。</li>
+                            <li><strong>速さの差 Δ速さ</strong>：向きは無視して、速さ（スピードメーターの数字）だけを比べた差です。惑星基準で、＋なら②のほうが速く、−なら遅いことを表します。</li>
+                            <li><strong>2つのちがい</strong>：たとえば①の速度が (3, 4)、②が (4, 3) のとき、どちらも速さは5なのでΔ速さは0ですが、向きがずれているので |Δv| は約1.41になります。速さが合っていても、向きがずれていれば |Δv| は0になりません。軌道が実測に合っているかを見るなら |Δv|、加速か減速かを見るならΔ速さです。</li>
+                            <li><strong>スイングバイ直前・直後</strong>：直前は表に書いた期間の開始時刻、直後は終了時刻の速度です。①は実測値、②は前の惑星の計算結果を引き継いだ値なので、惑星の間を等速直線運動と仮定して太陽の重力を無視している分、土星以降はずれが大きくなります（木星の直前は同じ初期値なので0）。</li>
                         </ul>
+
+                        <details class="pdf-preview">
+                            <summary>③の実行結果（くわしい数値）を表示</summary>
+                            <pre class="code-output diff-out" id="diffText" tabindex="0"></pre>
+                        </details>
                     </div>
                 </div>
             </div>

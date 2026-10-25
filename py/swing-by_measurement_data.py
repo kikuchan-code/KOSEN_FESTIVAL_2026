@@ -1,4 +1,5 @@
 import numpy as np
+from datetime import datetime
 
 # 各惑星スイングバイ直前の探査機速度 vo（惑星基準）
 vo_jupiter = np.array([-1.6803664, 10.921365, 3.5592165])
@@ -32,6 +33,27 @@ vi_N = np.array([5.28217551, 1.07625771, 3.09622254e-01])
 vf_N = np.array([5.28153709, 1.07838946, 3.09897969e-01])
 
 
+# データの時間（UT）
+# 速度データは NASA/JPL Horizons から取得したもので、
+#   「スイングバイ直前」の速度 = 開始時刻の値、「スイングバイ直後」の速度 = 終了時刻の値
+# 各項目は (開始時刻, 終了時刻, 最接近日)
+DATA_TIMES = {
+    "木星":   (datetime(1979, 7, 7),  datetime(1979, 7, 12), datetime(1979, 7, 9)),
+    "土星":   (datetime(1981, 8, 23), datetime(1981, 8, 28), datetime(1981, 8, 25)),
+    "天王星": (datetime(1986, 1, 22), datetime(1986, 1, 27), datetime(1986, 1, 24)),
+    "海王星": (datetime(1989, 8, 23), datetime(1989, 8, 28), datetime(1989, 8, 25)),
+}
+
+
+def format_time_lines(start, end, closest):
+    """データの時間を2行の文字列にして返す"""
+    days = (end - start).days
+    return (
+        f"データの時間（UT） = {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M}（{days}日間）\n"
+        f"最接近日 = {closest:%Y-%m-%d}"
+    )
+
+
 # 各惑星の速度データ
 results = [
     ("木星", vo_jupiter, vf_jupiter, vi_J, vf_J),
@@ -56,6 +78,7 @@ print("ボイジャー2号のスイングバイ速度データ")
 
 for planet, vo, vf, vi_planet, vf_planet in results:
     print(f"\n★ {planet}でのスイングバイ")
+    print(format_time_lines(*DATA_TIMES[planet]))
 
     print("スイングバイ直前の速度（太陽基準） =", vo + vi_planet)
     print("スイングバイ直前の速度（惑星基準） =", vo)

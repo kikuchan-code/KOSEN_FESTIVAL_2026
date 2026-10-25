@@ -1364,3 +1364,247 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
         font-size: .72rem;
     }
 }
+
+
+/* ==========================================================================
+   Velocity Diff & Mobile Enhancements（③の差の表・スマホ表示の強化）
+   ========================================================================== */
+
+/* ノッチ端末（横向き）で左右が欠けないように */
+.container,
+.header-inner {
+    padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+}
+
+.to-top-btn {
+    right: calc(24px + env(safe-area-inset-right, 0px));
+}
+
+/* ボタン類：ダブルタップ拡大を防ぎ、タップの反応を素早く */
+button,
+summary,
+.pdf-btn {
+    touch-action: manipulation;
+}
+
+/* 情報メモ（青系）：③の「同じフォルダに置く」案内 */
+.pdf-card-info .card-note.card-note-info {
+    color: #1d4a7a;
+    background: #f0f6fd;
+    border-color: #cfe0f3;
+}
+
+.pdf-card-info .card-note.card-note-info::before {
+    content: "i";
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: #3b82c4;
+    border-radius: 50%;
+    font-size: .7rem;
+    font-style: italic;
+    line-height: 1;
+}
+
+/* 速度の差の表（惑星＋時間 / 速度ベクトルの差 / 速さの差） */
+.diff-table {
+    min-width: 560px;
+}
+
+.diff-table thead th {
+    padding-block: 8px;
+}
+
+.diff-table thead tr:first-child th[colspan] {
+    border-bottom: 1px solid #e1e3ef;
+}
+
+.diff-table thead tr:first-child th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    text-align: left;
+    padding-left: 12px;
+}
+
+.diff-table thead tr:nth-child(2) th:first-child {
+    position: static;
+}
+
+.diff-table tbody th {
+    z-index: 1;
+    padding: 10px 12px;
+    text-align: left;
+    white-space: normal;
+}
+
+.diff-planet {
+    display: block;
+    font-size: 1rem;
+}
+
+.diff-period {
+    display: block;
+    color: #666;
+    font-size: .72rem;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.diff-final {
+    margin: 12px 0 0;
+    padding: 10px 14px;
+    color: #30335f;
+    background: #f4f5fd;
+    border-radius: 8px;
+    font-size: .88rem;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.diff-final[hidden] {
+    display: none;
+}
+
+.diff-out {
+    margin-top: 12px;
+}
+
+/* スマホの「速度のみ」は折り返して、横スクロールなしで読めるように */
+.compare-out.is-wrap {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+
+    /* 差の表は、惑星ごとのカードにして縦に並べる */
+    .diff-scroll {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .diff-table,
+    .diff-table tbody {
+        display: block;
+        min-width: 0;
+    }
+
+    .diff-table thead {
+        display: none;
+    }
+
+    .diff-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .diff-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: hidden;
+        border: 1px solid #e1e3ef;
+        border-radius: 12px;
+    }
+
+    .diff-table tbody th {
+        position: static;
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 2px 12px;
+        padding: 10px 14px;
+        background: #f4f5fd;
+        border-bottom: 1px solid #e1e3ef;
+    }
+
+    .diff-planet {
+        font-size: 1.05rem;
+    }
+
+    .diff-period {
+        display: inline;
+        font-size: .76rem;
+    }
+
+    .diff-table td {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 10px 6px;
+        border-bottom: 0;
+        font-size: 1.05rem;
+        font-weight: 700;
+    }
+
+    .diff-table td:nth-of-type(n+3) {
+        border-top: 1px solid rgba(0, 0, 0, .06);
+    }
+
+    .diff-table td:nth-of-type(odd) {
+        border-right: 1px solid rgba(0, 0, 0, .06);
+    }
+
+    .diff-table td::before {
+        content: attr(data-label);
+        font-size: .72rem;
+        font-weight: 600;
+        opacity: .75;
+    }
+
+    .diff-legend {
+        gap: 6px 12px;
+    }
+
+    .diff-final {
+        font-size: .85rem;
+    }
+
+    /* 折りたたみ・ボタンを指で押しやすく */
+    .pdf-preview summary {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+    }
+
+    .compare-tab,
+    .compare-pair {
+        min-height: 46px;
+    }
+
+    /* アドレスバーの伸び縮みに合わせた高さ */
+    .code-block,
+    .code-output {
+        max-height: min(60svh, 420px);
+    }
+
+    .compare-out {
+        height: min(60svh, 460px);
+    }
+}
+
+@media (max-width: 360px) {
+    .diff-table td {
+        font-size: .98rem;
+    }
+}
+
+/* 表の見出し：「スイングバイ直前／直後」を2行で表示 */
+.diff-table thead tr:nth-child(2) th {
+    white-space: normal;
+}
+
+@media (max-width: 600px) {
+    .diff-table td::before {
+        font-size: .7rem;
+        text-align: center;
+        line-height: 1.4;
+    }
+}

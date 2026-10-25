@@ -114,6 +114,10 @@ if (toTopBtn) {
   const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
   let pyodidePromise = null;
 
+  // id → カード（③が①②のコードを受け取るために使う）
+  const byId = {};
+  cards.forEach(c => { if (c.dataset.id) byId[c.dataset.id] = c; });
+
   // Pyodide は「初めて実行ボタンが押されたとき」にだけ読み込む
   function getPyodide() {
     if (!pyodidePromise) {
@@ -154,6 +158,8 @@ if (toTopBtn) {
     }
   }
 
+  const fileName = card => card.dataset.src.split('/').pop();
+
   cards.forEach(card => {
     const codeEl = card.querySelector('.code-block code');
     const statusEl = card.querySelector('.code-status');
@@ -176,6 +182,9 @@ if (toTopBtn) {
         codeEl.textContent = 'コードを読み込めませんでした。「.py をダウンロード」からご利用ください。';
       });
 
+    // 他のカード（③）がこのコードを読み込めるようにする
+    card.getCode = async () => { await ready; return code; };
+
     copyBtn?.addEventListener('click', async () => {
       await ready;
       if (!code) return;
@@ -187,8 +196,8 @@ if (toTopBtn) {
     // 実行ボタンは「実行結果を比べる」の1か所だけ。結果は code-result イベントで渡す
     const run = async () => {
       await ready;
-      const finish = (text, error) => {
-        card.dispatchEvent(new CustomEvent('code-result', { detail: { text, error } }));
+      const finish = (text, error, data = null) => {
+        card.dispatchEvent(new CustomEvent('code-result', { detail: { text, error, data } }));
         return !error;
       };
       if (!code) return finish('エラー: コードを読み込めませんでした。', true);
@@ -196,17 +205,39 @@ if (toTopBtn) {
       try {
         const py = await getPyodide();
 
+        // ③のように他の .py を読み込むプログラムは、仮想ファイルとして同じフォルダに置く
+        const needs = (card.dataset.requires || '').split(',').filter(Boolean);
+        if (needs.length) {
+          const cwd = py.runPython('import os\nos.getcwd()');
+          for (const id of needs) {
+            const dep = byId[id];
+            const depCode = dep ? await dep.getCode() : '';
+            if (!depCode) throw new Error(`${fileName(dep || card)} を読み込めませんでした。`);
+            py.FS.writeFile(`${cwd}/${fileName(dep)}`, depCode);
+          }
+        }
+
         const lines = [];
         py.setStdout({ batched: line => lines.push(line) });
         py.setStderr({ batched: line => lines.push(line) });
 
         const globals = py.globals.get('dict')();
+        let data = null;
         try {
           await py.runPythonAsync(code, { globals });
+
+          // DIFF_RESULT があれば、表の作成用に JavaScript のデータとして受け取る
+          const proxy = globals.get('DIFF_RESULT');
+          if (proxy) {
+            data = typeof proxy.toJs === 'function'
+              ? proxy.toJs({ dict_converter: Object.fromEntries, create_proxies: false })
+              : proxy;
+            if (typeof proxy.destroy === 'function') proxy.destroy();
+          }
         } finally {
           globals.destroy();
         }
-        return finish(lines.join('\n'), false);
+        return finish(lines.join('\n'), false, data);
       } catch (err) {
         return finish('エラー: ' + (err && err.message ? err.message : err), true);
       }
@@ -218,7 +249,7 @@ if (toTopBtn) {
 
 
 // ==========================================
-// 実行結果の比較（①を基準に、②または③と並べて表示）
+// 実行結果の比較（①を基準に②と並べて表示し、③が計算した差を表にする）
 // スマホはタブで切り替え、幅があれば2列で表示
 // ==========================================
 
@@ -232,9 +263,10 @@ if (toTopBtn) {
   if (!panel || !cardEls.length) return;
 
   const cards = Object.fromEntries(cardEls.map(c => [c.dataset.id, c]));
-  const results = {};            // id -> { text, error }
+  const results = {};            // id -> { text, error, data }
   const BASE = '1';              // 常に左に置く基準
   const other = '2';             // 比較相手（②）
+  const DIFF_ID = '3';           // 差を計算するプログラム（③）
   let mode = 'velocity';         // 'velocity'（速度のみ） | 'detail'（詳細）
 
   const circled = { 1: '①', 2: '②', 3: '③' };
@@ -256,7 +288,22 @@ if (toTopBtn) {
 
   const shortName = id => cards[id]?.dataset.short || id;
 
-  // 「速度のみ」表示：★見出しと速度の行、終了後速度だけを残す
+  // スマホ幅かどうか（狭いときは「速度のみ」を折り返して表示する）
+  const mqMobile = window.matchMedia('(max-width: 600px)');
+
+  // 「速度のみ」に残す行の見出し（py の print の先頭と同じ文字）
+  const ITEMS = [
+    'スイングバイ直前の速度（太陽基準）',
+    'スイングバイ直前の速度（惑星基準）',
+    'スイングバイ直後の速度（惑星基準）',
+    'スイングバイ直後の速度（太陽基準）'
+  ];
+  const TIME_KEYS = ['データの時間', 'シミュレーションの時間', '最接近日'];
+  const FINAL_KEY = 'スイングバイ終了後速度';
+  // スマホでは「見出し」と「値」を2行に分ける行
+  const SPLIT_KEYS = [...ITEMS, FINAL_KEY, 'データの時間', 'シミュレーションの時間'];
+
+  // 「速度のみ」表示：★見出し、時間、速度の行、終了後速度だけを残す
   function velocityOnly(text) {
     const out = [];
     let inPlanet = false;
@@ -273,58 +320,35 @@ if (toTopBtn) {
         inPlanet = false;
         return;
       }
-      if (inPlanet && ITEMS.some(k => line.startsWith(k))) out.push(line);
+      if (inPlanet && (ITEMS.some(k => line.startsWith(k)) || TIME_KEYS.some(k => line.startsWith(k)))) {
+        out.push(line);
+      }
     });
     return out.join('\n');
   }
 
+  // スマホ用：「見出し =」のあとで改行し、値の余分な空白をつめて横スクロールを避ける
+  function reflowForMobile(text) {
+    return text.split('\n').map(line => {
+      if (!SPLIT_KEYS.some(k => line.startsWith(k))) return line;
+      const m = line.match(/^(.*?)\s*(=|：)\s*(.+)$/);
+      if (!m) return line;
+      const value = m[3].replace(/\[\s+/, '[').replace(/\s{2,}/g, ' ');
+      return `${m[1]} ${m[2]}\n  ${value}`;
+    }).join('\n');
+  }
+
   function displayText(r) {
     if (r.error || mode === 'detail') return r.text;
-    return velocityOnly(r.text) || r.text;
+    const v = velocityOnly(r.text) || r.text;
+    return mqMobile.matches ? reflowForMobile(v) : v;
   }
 
-  // ---- 出力テキストから速度ベクトルを取り出して差を計算する ----
+  // ---- ③が計算した速度の差を表にする ----
   const diffWrap = document.getElementById('compareDiff');
   const diffBody = document.getElementById('diffBody');
-  const NUM = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g;
-  const ITEMS = [
-    'スイングバイ直前の速度（太陽基準）',
-    'スイングバイ直前の速度（惑星基準）',
-    'スイングバイ直後の速度（惑星基準）',
-    'スイングバイ直後の速度（太陽基準）'
-  ];
-  // 差を表示する項目（ITEMS の番号）：1=直前（惑星基準）, 2=直後（惑星基準）
-  // 太陽基準は同じ惑星速度を足すだけなので、差は惑星基準と同じ大きさになる
-  const DIFF_COLS = [1, 2];
-  const FINAL_KEY = 'スイングバイ終了後速度';
-  const PLANETS = ['木星', '土星', '天王星', '海王星'];
-
-  function vecOf(line) {
-    const i = line.indexOf('[');
-    if (i < 0) return null;
-    const nums = line.slice(i).match(NUM);
-    return nums && nums.length >= 3 ? nums.slice(0, 3).map(Number) : null;
-  }
-
-  function parseVelocities(text) {
-    const data = { final: null };
-    let planet = null;
-    text.split('\n').forEach(line => {
-      const m = line.match(/^★\s*(.+?)でのスイングバイ/);
-      if (m) { planet = m[1]; data[planet] = {}; return; }
-      if (line.startsWith(FINAL_KEY)) { data.final = vecOf(line); planet = null; return; }
-      if (!planet) return;
-      ITEMS.forEach((key, idx) => {
-        if (line.startsWith(key)) {
-          const v = vecOf(line);
-          if (v) data[planet][idx] = v;
-        }
-      });
-    });
-    return data;
-  }
-
-  const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  const diffFinal = document.getElementById('diffFinal');
+  const diffText = document.getElementById('diffText');
 
   function fmtDiff(d) {
     if (d < 1e-6) return '0';
@@ -332,13 +356,29 @@ if (toTopBtn) {
     return d.toPrecision(3);
   }
 
+  // 符号つき（＋は②のほうが速い）
+  function fmtSigned(d) {
+    const a = Math.abs(d);
+    if (a < 1e-6) return '0';
+    return (d > 0 ? '+' : '−') + fmtDiff(a);
+  }
+
   function diffClass(d) {
-    if (d < 1e-6) return 'diff-0';
-    if (d < 0.01) return 'diff-s';
-    if (d < 0.1) return 'diff-m';
-    if (d < 1) return 'diff-l';
+    const a = Math.abs(d);
+    if (a < 1e-6) return 'diff-0';
+    if (a < 0.01) return 'diff-s';
+    if (a < 0.1) return 'diff-m';
+    if (a < 1) return 'diff-l';
     return 'diff-x';
   }
+
+  // 表の列（キーは ③の DIFF_RESULT と同じ名前）
+  const DIFF_COLS = [
+    { key: 'pre_dv',  label: 'スイングバイ直前 |Δv|',    signed: false },
+    { key: 'post_dv', label: 'スイングバイ直後 |Δv|',    signed: false },
+    { key: 'pre_ds',  label: 'スイングバイ直前 Δ速さ',   signed: true },
+    { key: 'post_ds', label: 'スイングバイ直後 Δ速さ',   signed: true }
+  ];
 
   function cell(tag, text, cls) {
     const el = document.createElement(tag);
@@ -349,30 +389,53 @@ if (toTopBtn) {
 
   function renderDiff() {
     if (!diffWrap || !diffBody) return;
-    const ra = results[BASE];
-    const rb = results[other];
-    if (!ra || !rb || ra.error || rb.error) {
+    const r = results[DIFF_ID];
+    const planets = r && !r.error && r.data && Array.isArray(r.data.planets) ? r.data.planets : [];
+    if (!planets.length) {
       diffWrap.hidden = true;
       return;
     }
-    const A = parseVelocities(ra.text);
-    const B = parseVelocities(rb.text);
-    diffBody.replaceChildren();
 
-    PLANETS.forEach(p => {
-      if (!A[p] || !B[p]) return;
+    diffBody.replaceChildren();
+    planets.forEach(p => {
       const tr = document.createElement('tr');
-      tr.appendChild(cell('th', p)).scope = 'row';
-      DIFF_COLS.forEach(idx => {
-        const a = A[p][idx], b = B[p][idx];
-        if (!a || !b) { tr.appendChild(cell('td', '—', 'is-na')); return; }
-        const d = dist(a, b);
-        tr.appendChild(cell('td', fmtDiff(d), diffClass(d)));
+
+      // 惑星名と、計算に使った時間（シミュレーション期間）
+      const th = document.createElement('th');
+      th.scope = 'row';
+      th.appendChild(cell('span', p.planet, 'diff-planet'));
+      th.appendChild(cell('small', `${p.period}（${p.days}日間）`, 'diff-period'));
+      th.appendChild(cell('small', `最接近 ${p.closest}`, 'diff-period'));
+      tr.appendChild(th);
+
+      DIFF_COLS.forEach(col => {
+        const v = p[col.key];
+        if (typeof v !== 'number') {
+          const td = cell('td', '—', 'is-na');
+          td.dataset.label = col.label;
+          tr.appendChild(td);
+          return;
+        }
+        const td = cell('td', col.signed ? fmtSigned(v) : fmtDiff(v), diffClass(v));
+        td.dataset.label = col.label;
+        tr.appendChild(td);
       });
       diffBody.appendChild(tr);
     });
 
-    diffWrap.hidden = diffBody.children.length === 0;
+    // 海王星を通過したあとの最終的な速度（太陽基準）
+    const f = r.data.final;
+    if (diffFinal && f && typeof f.dv === 'number') {
+      diffFinal.textContent =
+        `海王星を通過したあとの速度（太陽基準）は、①と②で |Δv| = ${fmtDiff(f.dv)} km/s、` +
+        `速さは ①${f.speed_1.toFixed(2)} km/s・②${f.speed_2.toFixed(2)} km/s（差 ${fmtSigned(f.ds)} km/s）です。`;
+      diffFinal.hidden = false;
+    } else if (diffFinal) {
+      diffFinal.hidden = true;
+    }
+
+    if (diffText) diffText.textContent = r.text || '';
+    diffWrap.hidden = false;
   }
 
   function fill(sideKey, id) {
@@ -384,6 +447,8 @@ if (toTopBtn) {
     const r = results[id];
     s.out.classList.toggle('is-empty', !r);
     s.out.classList.toggle('is-error', !!(r && r.error));
+    // スマホの「速度のみ」だけ折り返す（詳細は横スクロール）
+    s.out.classList.toggle('is-wrap', mode === 'velocity' && mqMobile.matches);
     s.out.textContent = r ? displayText(r) : 'まだ実行されていません。';
     s.out.scrollTop = 0;
     s.out.scrollLeft = 0;
@@ -399,6 +464,11 @@ if (toTopBtn) {
       b.classList.toggle('is-active', on);
       b.setAttribute('aria-pressed', String(on));
     });
+  }
+
+  // 画面の向きを変えたときも表示を作り直す
+  if (typeof mqMobile.addEventListener === 'function') {
+    mqMobile.addEventListener('change', render);
   }
 
   function showPane(key) {
@@ -462,18 +532,21 @@ if (toTopBtn) {
   });
 
   runBothBtn?.addEventListener('click', async () => {
-    const pair = [BASE, other];
+    // ①②を実行してから、③で速度の差を計算する
+    const order = [BASE, other, DIFF_ID].filter(id => cards[id]);
     runBothBtn.disabled = true;
     runBothBtn.classList.add('is-running');
     try {
       let allOk = true;
-      for (const id of pair) {
-        statusEl.textContent = `${circled[id]}を実行しています…（初回は実行環境の読み込みに時間がかかります）`;
+      for (const id of order) {
+        statusEl.textContent = id === DIFF_ID
+          ? `${circled[id]}で速度の差を計算しています…`
+          : `${circled[id]}を実行しています…（初回は実行環境の読み込みに時間がかかります）`;
         const ok = await cards[id].runCode();
         allOk = allOk && ok;
       }
       statusEl.textContent = allOk
-        ? `${circled[BASE]}と${circled[other]}の実行が完了しました。見比べてみましょう。`
+        ? `${circled[BASE]}と${circled[other]}の実行と、${circled[DIFF_ID]}での差の計算が完了しました。見比べてみましょう。`
         : '一部の実行に失敗しました。';
       showPane('a');
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -211,6 +211,24 @@ t5 = datetime(1986, 1, 27, 00, 0, 0)
 # 海王星（最接近日：1989/8/25）
 t6 = datetime(1989, 8, 23, 00, 0, 0)
 t7 = datetime(1989, 8, 28, 00, 0, 0)
+
+# 惑星ごとの (開始時刻, 終了時刻, 最接近日) をまとめておく
+# 「スイングバイ直前」は開始時刻、「スイングバイ直後」は終了時刻の速度
+SIM_PERIODS = {
+    "木星":   (t0, t1, datetime(1979, 7, 9)),
+    "土星":   (t2, t3, datetime(1981, 8, 25)),
+    "天王星": (t4, t5, datetime(1986, 1, 24)),
+    "海王星": (t6, t7, datetime(1989, 8, 25)),
+}
+
+
+def format_time_lines(start, end, closest):
+    """シミュレーションの時間を2行の文字列にして返す"""
+    days = (end - start).days
+    return (
+        f"シミュレーションの時間（UT） = {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M}（{days}日間）\n"
+        f"最接近日 = {closest:%Y-%m-%d}"
+    )
 #--------------------------------------------------
 
 # 関数の呼び出し
@@ -252,6 +270,7 @@ results = [
 
 for planet, result, v_in, vi, vf in results:
     print(f"\n★ {planet}でのスイングバイ")
+    print(format_time_lines(*SIM_PERIODS[planet]))
 
     print("スイングバイ直前の速度（太陽基準） =", v_in + vi)
     print("スイングバイ直前の速度（惑星基準） =", v_in)
