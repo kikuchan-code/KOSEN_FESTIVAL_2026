@@ -151,7 +151,7 @@ def signed(x):
 
 print("速度のちがい（② - ①）　単位：km/s")
 print("・|Δv| = 速度ベクトルの差の大きさ")
-print("・Δ速さ = 速さの差（+ なら②のほうが速い）")
+print("・Δv = 速さの差（+ なら②のほうが速い）")
 print("・直前は期間の開始時刻、直後は終了時刻の速度")
 
 for p in planets:
@@ -162,11 +162,11 @@ for p in planets:
     for key, label in (("pre", "スイングバイ直前"), ("post", "スイングバイ直後")):
         print(f"{label}")
         print(f"  速度ベクトルの差の大きさ |Δv| = {p[key + '_dv']:.6f}")
-        print(f"  速さの差 Δ速さ（惑星基準）   = {signed(p[key + '_ds'])}")
+        print(f"  速さの差 Δv（惑星基準）   = {signed(p[key + '_ds'])}")
         print(f"  速さ（惑星基準）  ① = {p[key + '_speed_1']:.6f}  ② = {p[key + '_speed_2']:.6f}")
         print(f"  速さ（太陽基準）  ① = {p[key + '_speed_sun_1']:.6f}  ② = {p[key + '_speed_sun_2']:.6f}")
 
 print("\nスイングバイ終了後の速度（太陽基準）")
 print(f"  速度ベクトルの差の大きさ |Δv| = {final['dv']:.6f}")
-print(f"  速さの差 Δ速さ               = {signed(final['ds'])}")
+print(f"  速さの差 Δv               = {signed(final['ds'])}")
 print(f"  速さ  ① = {final['speed_1']:.6f}  ② = {final['speed_2']:.6f}")

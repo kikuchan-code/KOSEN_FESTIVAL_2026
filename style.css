@@ -1608,3 +1608,368 @@ summary,
         line-height: 1.4;
     }
 }
+
+
+/* ==========================================================================
+   Simple Layout（シンプルにまとめた、PC・スマホ共通の読みやすさ）
+   ========================================================================== */
+
+/* PC：文字を少し大きく、行を長くしすぎない */
+body {
+    font-size: clamp(15px, .35vw + 13px, 18px);
+}
+
+.pdf-description {
+    max-width: 46em;
+}
+
+/* 実行ボタン（概要の下） */
+.run-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin-top: 20px;
+}
+
+.run-cta-btn {
+    min-height: 52px;
+    padding-inline: 26px;
+    font-size: 1rem;
+}
+
+.run-cta-note {
+    margin: 0;
+    color: #666;
+    font-size: .88rem;
+}
+
+/* 横向きスマホ：ヘッダーを低くして、本文の表示領域を広げる */
+@media (max-height: 480px) and (orientation: landscape) {
+    :root {
+        --header-height: 56px;
+    }
+
+    .header-inner {
+        min-height: 56px;
+        padding-block: 4px;
+    }
+
+    .logo-subtitle {
+        display: none;
+    }
+
+    .logo-title {
+        font-size: 1.3rem;
+    }
+}
+
+/* 幅の狭いスマホ（〜400px） */
+@media (max-width: 400px) {
+    .nav {
+        width: min(88vw, 320px);
+    }
+
+    .run-cta {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .run-cta-btn {
+        width: 100%;
+    }
+
+    .run-cta-note {
+        text-align: center;
+    }
+
+    .pdf-card {
+        padding: 14px;
+    }
+
+    .code-block,
+    .code-output {
+        font-size: .72rem;
+        padding: 10px 12px;
+    }
+
+    .compare-tab,
+    .compare-pair {
+        padding-inline: 8px;
+        font-size: .88rem;
+    }
+
+    /* 惑星ごとのカード：期間の文字が長くても、はみ出さずに折り返す */
+    .diff-period {
+        white-space: normal;
+    }
+
+    .diff-table td {
+        padding-inline: 4px;
+    }
+}
+
+/* 折りたたみ・ボタンはPCでも押しやすい高さに */
+.pdf-preview summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+}
+
+.pdf-btn,
+.compare-tab,
+.compare-pair {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ==========================================================================
+   Diff Table Refresh（速度の差の表を、読みやすく）
+   ========================================================================== */
+
+.compare-diff-title small {
+    display: block;
+    margin-top: 2px;
+    color: #666;
+    font-size: .82rem;
+    font-weight: 400;
+}
+
+.diff-legend {
+    margin: 0 0 10px;
+    align-items: center;
+}
+
+.diff-legend-label {
+    color: #46487c;
+    font-weight: 700;
+}
+
+/* 海王星通過後の速度：4つの数字で見せる */
+.diff-final {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #f4f5fd;
+    border: 1px solid #e1e3ef;
+    border-radius: 12px;
+}
+
+.diff-final-title {
+    margin: 0 0 10px;
+    color: #30335f;
+    font-size: .92rem;
+    font-weight: 700;
+}
+
+.diff-final-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+}
+
+.diff-final-grid > div {
+    min-width: 0;
+    padding: 10px 8px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e1e3ef;
+    border-radius: 10px;
+}
+
+.diff-final-grid dt {
+    color: #666;
+    font-size: .74rem;
+    line-height: 1.4;
+}
+
+.diff-final-grid dd {
+    margin: 4px 0 0;
+    color: #30335f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .diff-final-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 表の読み方 */
+.diff-guide {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border: 1px solid #e1e3ef;
+    border-radius: 12px;
+}
+
+.diff-guide-title {
+    margin: 0 0 10px;
+    color: #30335f;
+    font-size: .95rem;
+}
+
+.diff-guide-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+}
+
+.diff-guide-list dt {
+    color: #46487c;
+    font-size: .88rem;
+    font-weight: 700;
+}
+
+.diff-guide-list dd {
+    margin: 2px 0 0;
+    color: #444;
+    font-size: .88rem;
+    line-height: 1.7;
+    word-break: auto-phrase;
+    overflow-wrap: anywhere;
+}
+
+.diff-more {
+    margin-top: 10px;
+}
+
+.diff-more .diff-notes {
+    margin-top: 6px;
+}
+
+/* Voyager swing-by speed-difference guide */
+        /* 速度の差の表：説明を短く整理し、詳細は折りたたむ */
+        .diff-guide-intro {
+            margin: 0 0 12px;
+            color: #444;
+            font-size: .9rem;
+            line-height: 1.75;
+        }
+
+        .diff-guide-list .diff-concept {
+            padding: 11px 12px;
+            border: 1px solid #e1e3ef;
+            border-radius: 9px;
+            background: #fafaff;
+        }
+
+        .diff-detail-content {
+            padding: 8px 0 2px;
+            color: #444;
+            font-size: .88rem;
+            line-height: 1.75;
+        }
+
+        .diff-detail-block + .diff-detail-block {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #e7e8f0;
+        }
+
+        .diff-detail-block h6 {
+            margin: 0 0 6px;
+            color: #46487c;
+            font-size: .92rem;
+        }
+
+        .diff-detail-block p {
+            margin: 6px 0;
+        }
+
+        .diff-formula {
+            padding: 8px 12px;
+            border-radius: 7px;
+            background: #f0f2fb;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            font-variant-numeric: lining-nums;
+            text-align: center;
+        }
+
+        /* <var> の既定の斜体を抑え、Sans 体で統一 */
+        .diff-formula var {
+            font-family: inherit;
+            font-style: normal;
+        }
+
+        /* 軽量なベクトル矢印：外部フォントや数式ライブラリは不要 */
+        .diff-vector {
+            position: relative;
+            display: inline-block;
+            padding: .12em .02em 0;
+            font-style: normal;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .diff-vector::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: -0.04em;
+            top: 0;
+            border-top: 1.3px solid currentColor;
+        }
+
+        .diff-vector::after {
+            content: "";
+            position: absolute;
+            top: -0.17em;
+            right: -0.04em;
+            width: 0;
+            height: 0;
+            border-top: .18em solid transparent;
+            border-bottom: .18em solid transparent;
+            border-left: .28em solid currentColor;
+            transform: scale(.72);
+            transform-origin: right center;
+        }
+
+        .diff-vector sub {
+            font-size: .68em;
+            line-height: 0;
+            vertical-align: -.25em;
+        }
+
+        .diff-example-results {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .diff-example-results > div {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 12px;
+            border: 1px solid #e1e3ef;
+            border-radius: 9px;
+            background: #fff;
+        }
+
+        .diff-example-results span {
+            color: #46487c;
+            font-weight: 700;
+        }
+
+        .diff-example-results strong {
+            font-size: 1.15rem;
+            line-height: 1.4;
+        }
+
+        .diff-example-results small {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .diff-example-results {
+                grid-template-columns: 1fr;
+            }
+        }

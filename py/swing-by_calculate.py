@@ -99,7 +99,7 @@ def calculate_orbit(planet_lb,r0_vec, v0_vec, mu ,t_initial, t_final):
     # 初期値
     H = H_0
     # 要求精度
-    epsilon1 = 0.00001
+    epsilon1 = 0.00000001
     # とりあえずの変数
     n = 1
 
