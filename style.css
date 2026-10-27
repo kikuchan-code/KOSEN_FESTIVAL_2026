@@ -1619,10 +1619,6 @@ body {
     font-size: clamp(15px, .35vw + 13px, 18px);
 }
 
-.pdf-description {
-    max-width: 46em;
-}
-
 /* 実行ボタン（概要の下） */
 .run-cta {
     display: flex;
