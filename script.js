@@ -376,10 +376,10 @@ if (toTopBtn) {
 
   // 表の列（キーは ③の DIFF_RESULT と同じ名前）
   const DIFF_COLS = [
-    { key: 'pre_dv', label: 'スイングバイ直前　|<span class="diff-vector">Δv</span>', signed: false },
-    { key: 'post_dv', label: 'スイングバイ直後　|<span class="diff-vector">Δv</span>', signed: false },
-    { key: 'pre_ds', label: 'スイングバイ直前 Δv', signed: true },
-    { key: 'post_ds', label: 'スイングバイ直後 Δv', signed: true }
+    { key: 'pre_dv', label: 'スイングバイ直前　|Δv|', signed: false },
+    { key: 'post_dv', label: 'スイングバイ直後　|Δv|', signed: false },
+    { key: 'pre_ds', label: 'スイングバイ直前の速さの差', signed: true },
+    { key: 'post_ds', label: 'スイングバイ直後の速さの差', signed: true }
   ];
 
   function cell(tag, text, cls) {
@@ -436,7 +436,7 @@ if (toTopBtn) {
         ['① 実測の速さ', `${f.speed_1.toFixed(2)} km/s`],
         ['② 計算の速さ', `${f.speed_2.toFixed(2)} km/s`],
         ['速さの差（② − ①）', `${fmtSigned(f.ds)} km/s`],
-        ['ベクトルの差　|<span class="diff-vector">Δv</span>|', `${fmtDiff(f.dv)} km/s`]
+        ['速度ベクトルの差　|Δv|', `${fmtDiff(f.dv)} km/s`]
       ].forEach(([k, v]) => {
         const d = document.createElement('div');
 
