@@ -127,7 +127,8 @@
                             <span class="pdf-badge">PY</span>
                             <div class="pdf-card-info">
                                 <h4>② 軌道計算版（双曲線軌道のシミュレーション）</h4>
-                                <p>初期位置・速度から、離心率・最接近距離・無限遠速度・散乱角などを計算し、ニュートン法で双曲線異常を解いてスイングバイ後の位置と速度を求めます。木星から海王星まで順につないで計算し、比軌道エネルギーが保存されているかも確認します。</p>
+                                <p>初期位置・速度から、離心率・最接近距離・無限遠速度・散乱角などを計算し、ニュートン法で双曲線異常を解いてスイングバイ後の位置と速度を求めます。木星から海王星まで順につないで計算し、比軌道エネルギーが保存されているかも確認します。
+                                </p>
                                 <p class="card-note">
                                     実行すると、スイングバイ前後の比軌道エネルギーの差が最大でも約10<sup>-13</sup> km<sup>2</sup>/s<sup>2</sup>
                                     とごく小さく、エネルギーが保存されていることが確認できます。
@@ -163,7 +164,8 @@
                             <span class="pdf-badge">PY</span>
                             <div class="pdf-card-info">
                                 <h4>③ 差の計算版（速度のちがいを計算）</h4>
-                                <p>①と②を読み込み、惑星ごとに「速度ベクトルの差の大きさ」と「速さの差」をスイングバイの直前・直後で計算します。計算に使ったシミュレーションの時間も合わせて表示します。</p>
+                                <p>①と②を読み込み、惑星ごとに「速度ベクトルの差の大きさ」と「速さの差」をスイングバイの直前・直後で計算します。計算に使ったシミュレーションの時間も合わせて表示します。
+                                </p>
                                 <p class="card-note card-note-info">
                                     ③は①②の結果を使うため、手元で動かすときは3つの .py ファイルを同じフォルダに置いてください。ブラウザ上では「実行して比較」を押すと自動でつながります。
                                 </p>
@@ -213,8 +215,7 @@
                     <div class="compare-pairs" role="group" aria-label="表示する内容">
                         <button type="button" class="compare-pair is-active" aria-pressed="true"
                             data-mode="velocity">速度のみ</button>
-                        <button type="button" class="compare-pair" aria-pressed="false"
-                            data-mode="detail">詳細</button>
+                        <button type="button" class="compare-pair" aria-pressed="false" data-mode="detail">詳細</button>
                     </div>
                 </div>
                 <p class="code-status" id="compareStatus" role="status" aria-live="polite"></p>
@@ -222,10 +223,10 @@
 
                 <div class="compare" id="comparePanel">
                     <div class="compare-tabs" role="tablist" aria-label="表示する結果の切り替え">
-                        <button type="button" class="compare-tab is-active" role="tab" id="tab-a"
-                            aria-selected="true" aria-controls="cmp-a" data-pane="a">① 実測データ版</button>
-                        <button type="button" class="compare-tab" role="tab" id="tab-b"
-                            aria-selected="false" aria-controls="cmp-b" data-pane="b">② 軌道計算版</button>
+                        <button type="button" class="compare-tab is-active" role="tab" id="tab-a" aria-selected="true"
+                            aria-controls="cmp-a" data-pane="a">① 実測データ版</button>
+                        <button type="button" class="compare-tab" role="tab" id="tab-b" aria-selected="false"
+                            aria-controls="cmp-b" data-pane="b">② 軌道計算版</button>
                     </div>
 
                     <div class="compare-grid">
@@ -254,7 +255,9 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" rowspan="2">惑星と期間</th>
-                                        <th scope="colgroup" colspan="2">['速度ベクトルの差<br>|Δv|', `${fmtDiff(f.dv)} km/s`]</th>
+                                        <th scope="colgroup" colspan="2">
+                                            速度ベクトルの差<br>|<span class="diff-vector">Δv</span>|
+                                        </th>
                                         <th scope="colgroup" colspan="2">速さの差<br>Δv（② − ①）</th>
                                     </tr>
                                     <tr>
@@ -271,7 +274,8 @@
 
                         <div class="diff-guide">
                             <h5 class="diff-guide-title">表の読み方</h5>
-                            <p class="diff-guide-intro">①実測データ版と②軌道計算版の速度を比べ、<strong>速度全体のずれ</strong>と<strong>速さだけのずれ</strong>を調べています。</p>
+                            <p class="diff-guide-intro">
+                                ①実測データ版と②軌道計算版の速度を比べ、<strong>速度全体のずれ</strong>と<strong>速さだけのずれ</strong>を調べています。</p>
                             <dl class="diff-guide-list">
                                 <div class="diff-concept">
                                     <dt>速度ベクトルの差　|<span class="diff-vector">Δv</span>|</dt>
@@ -292,18 +296,22 @@
                                     <section class="diff-detail-block">
                                         <h6>① 速度ベクトルの差 |<span class="diff-vector">Δv</span>|</h6>
                                         <p>①と②の速度を矢印として考え、その矢印の先端どうしがどれだけ離れているかを表します。</p>
-                                        <p class="diff-formula">|<span class="diff-vector">Δv</span>| = |<span class="diff-vector">v<sub>2</sub></span> − <span class="diff-vector">v<sub>1</sub></span>|</p>
+                                        <p class="diff-formula">|<span class="diff-vector">Δv</span>| = |<span
+                                                class="diff-vector">v<sub>2</sub></span> − <span
+                                                class="diff-vector">v<sub>1</sub></span>|</p>
                                         <p>速さが同じでも、向きが違えば値は0になりません。</p>
                                     </section>
                                     <section class="diff-detail-block">
                                         <h6>② 速さの差 Δv</h6>
                                         <p>①と②の速さ（速度ベクトルの大きさ）を引き算します。速度の向きは比較しません。</p>
-                                        <p class="diff-formula">Δv = |<span class="diff-vector">v<sub>2</sub></span>| − |<span class="diff-vector">v<sub>1</sub></span>|</p>
+                                        <p class="diff-formula">Δv = |<span class="diff-vector">v<sub>2</sub></span>| −
+                                            |<span class="diff-vector">v<sub>1</sub></span>|</p>
                                         <p>速さが同じなら、進む向きが違っていても差は0です。</p>
                                     </section>
                                     <section class="diff-detail-block diff-example">
                                         <h6>数字で比べると</h6>
-                                        <p>①実測の速度が <strong>(3, 4) km/s</strong>、②計算の速度が <strong>(4, 3) km/s</strong> だったとします。どちらも速さは5 km/sです。</p>
+                                        <p>①実測の速度 <span class="diff-vector">v<sub>1</sub></span> が <strong>(3, 4) km/s</strong>、②計算の速度 <span class="diff-vector">v<sub>2</sub></span> が <strong>(4, 3) km/s</strong>
+                                            だったとします。どちらも速さは5 km/sです。</p>
                                         <div class="diff-example-results">
                                             <div>
                                                 <span>速度ベクトルの差</span>
@@ -316,10 +324,11 @@
                                                 <small>どちらも速さは5 km/sです。</small>
                                             </div>
                                         </div>
-                                        <p>つまり、|Δv| は「速度全体のずれ」、Δvは「速さだけのずれ」を表します。</p>
+                                        <p>つまり、|<span class="diff-vector">Δv</span>| は「速度全体のずれ」、Δv は「速さだけのずれ」を表します。</p>
                                     </section>
                                     <ul class="diff-notes">
-                                        <li><strong>土星以降でずれが大きくなる理由：</strong>①は実測値、②は前の惑星の計算結果を引き継いだ値です。②では惑星間を等速直線運動と仮定して太陽の重力を無視しているため、土星以降はずれが大きくなります。木星の直前は同じ初期値なので、差は0です。</li>
+                                        <li><strong>土星以降でずれが大きくなる理由：</strong>①は実測値、②は前の惑星の計算結果を引き継いだ値です。②では惑星間を等速直線運動と仮定して太陽の重力を無視しているため、土星以降はずれが大きくなります。木星の直前は同じ初期値なので、差は0です。
+                                        </li>
                                     </ul>
                                 </div>
                             </details>
