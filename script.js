@@ -594,13 +594,15 @@ if (toTopBtn) {
 
 (function () {
   const SHARE_CONFIG = {
-    hashtags: ['ボイジャー2号', '総合課題実習3', '公大高専', '公大高専祭', '公大高専祭2026'],
+    hashtags: ['ボイジャー2号', 'スイングバイ', 'python', '公大高専祭', '公大高専祭2026'],
     // 展示ページ（この高専祭展示）
     festival: { label: '🚀 展示ページ', url: 'https://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/' },
-    // 大元のサイト（null にすると投稿に含めません）
-    site: { label: '📚 S.K. Base Study Hub', url: 'https://study.kikuchan-code.workers.dev/' },
+    // 大元のサイト（null にすると投稿に含めません）。さりげなく添える程度にとどめる
+    site: { label: '制作｜S.K. Base Study Hub', url: 'https://study.kikuchan-code.workers.dev/' },
     // 本文（URLはここに書かず、上の festival / site に書く）
-    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。'
+    pageText: 'ボイジャー2号は、4つの惑星の重力を借りて太陽系の外へ向かいました。\nそのスイングバイを、ブラウザ上のPythonで再現。実測データと軌道計算が、どこまで重なるか見比べられます🚀',
+    // 実行結果を載せるときの本文（{a}=実測 {b}=計算 {d}=差）
+    resultText: '海王星を通過したあとのボイジャー2号の速さを、実測と計算で比べてみました🛰️\n実測 {a} km/s／計算 {b} km/s（差 {d}）\nどちらもブラウザ上のPythonです。'
   };
 
   const toastEl = document.getElementById('toast');
@@ -643,6 +645,15 @@ if (toTopBtn) {
       tagText()
     ].filter(Boolean).join('\n\n');
 
+    // Instagram：投稿画面へ文を渡す仕組みがないため、キャプションをコピーして開く。
+    // キャプション内のURLはタップできないので、リンクは1つだけ・制作元は名前のみにする
+    const igText = () => [
+      state.text,
+      '🚀 ' + state.url,
+      SHARE_CONFIG.site ? SHARE_CONFIG.site.label : '',
+      tagText()
+    ].filter(Boolean).join('\n\n');
+
     const xUrl = () => 'https://x.com/intent/post?text=' + encodeURIComponent(xText());
     const lineUrl = () => 'https://line.me/R/share?text=' + encodeURIComponent(state.text + '\n' + state.url);
 
@@ -681,6 +692,21 @@ if (toTopBtn) {
       });
     });
 
+    // クリックの操作中に同期でコピーし、リンク本来の動作（Instagramを開く）はそのまま行う
+    scope.querySelectorAll('[data-share-target="instagram"]').forEach(a => {
+      a.addEventListener('click', () => {
+        const text = igText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(() => {});
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        }
+        toast('キャプションをコピーしました。投稿画面で貼り付けてください');
+      });
+    });
+
     scope.querySelectorAll('[data-share-target="copy"]').forEach(b => {
       b.addEventListener('click', async () => {
         try { await navigator.clipboard.writeText(state.url); }
@@ -699,9 +725,10 @@ if (toTopBtn) {
         const f = e.detail;
         if (!f || typeof f.speed_1 !== 'number') { scope.hidden = true; return; }
         const sign = f.ds > 0 ? '+' : f.ds < 0 ? '−' : '';
-        state.text = 'ボイジャー2号が海王星通過後の速さ\n' +
-          `実測 ${f.speed_1.toFixed(2)} km/s／計算 ${f.speed_2.toFixed(2)} km/s（差 ${sign}${Math.abs(f.ds).toFixed(2)}）\n` +
-          'ブラウザ上のPythonで比べてみた🛰️';
+        state.text = SHARE_CONFIG.resultText
+          .replace('{a}', f.speed_1.toFixed(2))
+          .replace('{b}', f.speed_2.toFixed(2))
+          .replace('{d}', sign + Math.abs(f.ds).toFixed(2));
         update();
         scope.hidden = false;
       });

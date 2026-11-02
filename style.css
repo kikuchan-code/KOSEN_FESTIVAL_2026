@@ -2083,6 +2083,10 @@ body { color: var(--ink); background: #fafaff; letter-spacing: .01em; }
 .share-btn > span { min-width: 0; }
 .share-x { color: #fff; background: #000; border-color: rgba(255,255,255,.35); }
 .share-line { color: #fff; background: #06c755; }
+.share-ig { color: #fff; background: linear-gradient(45deg, #f09433, #dc2743 50%, #bc1888); }
+/* 制作元（大元のサイト）はさりげなく：2つ目のリンクカードは控えめに */
+.share-preview-link:nth-child(2) { background: transparent; border-style: dashed; opacity: .75; }
+.share-preview-link:nth-child(2) .share-preview-label { font-weight: 500; }
 .share-ghost { color: #fff; background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.35); }
 .hero .hero-share { color: #fff; background: #000; border: 1px solid rgba(255,255,255,.4); min-height: 52px; padding-inline: 24px; }
 @media (hover: hover) { .share-btn:hover { transform: translateY(-2px); filter: brightness(1.12); } }
