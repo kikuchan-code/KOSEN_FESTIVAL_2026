@@ -456,6 +456,7 @@ if (toTopBtn) {
 
     if (diffText) diffText.textContent = r.text || '';
     diffWrap.hidden = false;
+    document.dispatchEvent(new CustomEvent('diff-ready', { detail: r.data.final || null }));
   }
 
   function fill(sideKey, id) {
@@ -578,4 +579,83 @@ if (toTopBtn) {
   });
 
   render();
+})();
+
+
+// ==========================================
+// シェア（X / LINE / リンクコピー / 端末の共有）
+// 投稿文は下の SHARE_CONFIG で変更できます
+// ==========================================
+
+(function () {
+  const SHARE_CONFIG = {
+    hashtags: ['ボイジャー2号', 'Python', '高専祭'],
+    // Xの投稿の末尾に、さりげなく添える大元サイトの紹介（空文字にすると無効）
+    siteLine: '📚 高専生の基礎学習サイト「S.K. Base Study Hub」\nhttps://study.kikuchan-code.workers.dev/',
+    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。'
+  };
+
+  const pageUrl = () => location.origin + location.pathname.replace(/index\.html$/, '');
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+  const toast = msg => {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  };
+
+  const tagText = () => SHARE_CONFIG.hashtags.map(t => '#' + t).join(' ');
+
+  document.querySelectorAll('[data-share-scope]').forEach(scope => {
+    const isResult = scope.dataset.shareScope === 'result';
+    const state = { text: SHARE_CONFIG.pageText, url: pageUrl() + (isResult ? '#compare' : '') };
+    const preview = scope.querySelector('[data-share-preview]');
+
+    const xText = () => state.text + (SHARE_CONFIG.siteLine ? '\n\n' + SHARE_CONFIG.siteLine : '');
+    const xUrl = () => 'https://x.com/intent/post?text=' + encodeURIComponent(xText()) +
+      '&url=' + encodeURIComponent(state.url) + '&hashtags=' + encodeURIComponent(SHARE_CONFIG.hashtags.join(','));
+    const lineUrl = () => 'https://line.me/R/share?text=' + encodeURIComponent(state.text + '\n' + state.url);
+
+    function update() {
+      if (preview) preview.textContent = xText() + '\n' + tagText();
+      scope.querySelectorAll('[data-share-target="x"]').forEach(a => { a.href = xUrl(); });
+      scope.querySelectorAll('[data-share-target="line"]').forEach(a => { a.href = lineUrl(); });
+    }
+
+    scope.querySelectorAll('[data-share-target="native"]').forEach(b => {
+      if (navigator.share) b.hidden = false;
+      b.addEventListener('click', async () => {
+        try { await navigator.share({ title: document.title, text: state.text, url: state.url }); } catch (e) { /* キャンセル */ }
+      });
+    });
+
+    scope.querySelectorAll('[data-share-target="copy"]').forEach(b => {
+      b.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(state.url); }
+        catch (e) {
+          const ta = document.createElement('textarea');
+          ta.value = state.url; ta.style.cssText = 'position:fixed;opacity:0';
+          document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+        }
+        toast('リンクをコピーしました');
+      });
+    });
+
+    // 実行結果が出たら、その数字を入れた投稿文に差し替える
+    if (isResult) {
+      document.addEventListener('diff-ready', e => {
+        const f = e.detail;
+        if (!f || typeof f.speed_1 !== 'number') { scope.hidden = true; return; }
+        const sign = f.ds > 0 ? '+' : f.ds < 0 ? '−' : '';
+        state.text = 'ボイジャー2号が海王星を通過したあとの速さ\n' +
+          `実測 ${f.speed_1.toFixed(2)} km/s／計算 ${f.speed_2.toFixed(2)} km/s（差 ${sign}${Math.abs(f.ds).toFixed(2)}）\n` +
+          'ブラウザ上のPythonで比べてみた🛰️';
+        update();
+        scope.hidden = false;
+      });
+    }
+    update();
+  });
 })();

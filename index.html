@@ -10,6 +10,16 @@
     <title>ボイジャー2号の軌道計算｜高専祭展示 | S.K. Base Study Hub</title>
     <meta name="description" content="ボイジャー2号が木星・土星・天王星・海王星で行ったスイングバイを、Pythonで再現。コードの閲覧・コピー・ブラウザ上での実行ができる高専祭展示ページです。">
 
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="S.K. Base Study Hub" />
+    <meta property="og:title" content="ボイジャー2号の軌道計算｜ブラウザでPythonが動く高専祭展示" />
+    <meta property="og:description" content="木星・土星・天王星・海王星のスイングバイをPythonで再現。実測データと軌道計算を、インストール不要でその場で比べられます。" />
+    <meta property="og:locale" content="ja_JP" />
+    <!-- 【要確認】og:image / twitter:image は絶対URLが必要です。ogp.png を index.html と同じ場所に置き、下のURLをそのパスに合わせてください -->
+    <meta property="og:image" content="https://study.kikuchan-code.workers.dev/ogp.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ボイジャー2号の軌道計算｜ブラウザでPythonが動く高専祭展示" />
+    <meta name="twitter:image" content="https://study.kikuchan-code.workers.dev/ogp.png" />
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.ico">
@@ -38,6 +48,7 @@
                     <li><a href="#programs">プログラム</a></li>
                     <li><a href="#compare">Pythonを実行</a></li>
                     <li><a href="#pdf">資料（PDF）</a></li>
+                    <li><a href="#share">シェア</a></li>
                     <li><a href="https://study.kikuchan-code.workers.dev/">ホームにもどる</a></li>
                 </ul>
             </nav>
@@ -47,7 +58,7 @@
     <main class="main-content">
 
         <!-- 概要 -->
-        <section class="section" id="overview">
+        <section class="section hero" id="overview">
             <div class="container">
 
                 <nav class="breadcrumb">
@@ -56,16 +67,17 @@
 
                 <h2 class="section-title">ボイジャー2号の軌道計算</h2>
 
-                <p class="pdf-description">
+                <p class="section-description">
                     総合課題実習3の課題として、わたしたち「チームK」はボイジャー2号の軌道を調べました。ボイジャー2号は、木星・土星・天王星・海王星の重力で軌道を変えながら旅をしました（スイングバイ）。
                     この展示では、それを3つのPythonプログラムで再現して結果を比べます。コードは読む・コピーする・ダウンロードするだけでなく、<strong>ブラウザの上でそのまま実行</strong>できます。
                 </p>
 
-                <div class="run-cta">
-                    <a href="#compare" class="pdf-btn pdf-view run-cta-btn">
+                <div class="run-cta" data-share-scope="page">
+                    <a href="#compare" class="btn btn-primary run-cta-btn">
                         <span aria-hidden="true">▶</span>
                         Pythonを実行して比べる
                     </a>
+                    <a class="share-btn share-x hero-share" data-share-target="x" href="https://x.com/intent/post" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>Xでポスト</span></a>
                     <p class="run-cta-note">インストール不要。ブラウザの中で動きます。</p>
                 </div>
 
@@ -88,81 +100,77 @@
                     そのため木星では実測と近い値になりますが、土星以降は「実測データ版」と値が離れていきます。下の「実行結果を比べる」で、③が計算した①との差を確認できます。
                 </p>
 
-                <div class="pdf-list">
+                <div class="card-list">
 
                     <!-- プログラム 1 -->
-                    <article class="pdf-card code-card" data-code-card data-id="1" data-short="① 実測データ版"
+                    <article class="content-card code-card" data-code-card data-id="1" data-short="① 実測データ版"
                         data-src="./py/swing-by_measurement_data.py">
-                        <div class="pdf-card-header">
-                            <span class="pdf-badge">PY</span>
-                            <div class="pdf-card-info">
+                        <div class="content-card-header">
+                            <span class="content-badge">PY</span>
+                            <div class="content-card-info">
                                 <h4>① 実測データ版（速度の基準変換）</h4>
                                 <p>各惑星のスイングバイ前後で実測された探査機の速度（惑星基準）と、惑星自身の速度（太陽基準）を足し合わせ、太陽基準の速度に変換して表示します。</p>
                             </div>
                         </div>
 
-                        <div class="pdf-actions">
-                            <button type="button" class="pdf-btn pdf-download" data-action="copy">
+                        <div class="action-row">
+                            <button type="button" class="btn btn-secondary" data-action="copy">
                                 <span aria-hidden="true">⧉</span>
                                 コードをコピー
                             </button>
-                            <a href="./py/swing-by_measurement_data.py" class="pdf-btn pdf-download"
+                            <a href="./py/swing-by_measurement_data.py" class="btn btn-secondary"
                                 download="swing-by_measurement_data.py">
                                 <span aria-hidden="true">↓</span>
-                                .py をダウンロード
+                               ダウンロード
                             </a>
                         </div>
                         <p class="code-status" role="status" aria-live="polite"></p>
 
-                        <details class="pdf-preview">
+                        <details class="disclosure">
                             <summary>コードを表示</summary>
                             <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
                         </details>
                     </article>
 
                     <!-- プログラム 2 -->
-                    <article class="pdf-card code-card" data-code-card data-id="2" data-short="② 軌道計算版"
+                    <article class="content-card code-card" data-code-card data-id="2" data-short="② 軌道計算版"
                         data-src="./py/swing-by_calculate.py">
-                        <div class="pdf-card-header">
-                            <span class="pdf-badge">PY</span>
-                            <div class="pdf-card-info">
+                        <div class="content-card-header">
+                            <span class="content-badge">PY</span>
+                            <div class="content-card-info">
                                 <h4>② 軌道計算版（双曲線軌道のシミュレーション）</h4>
                                 <p>初期位置・速度から、離心率・最接近距離・無限遠速度・散乱角などを計算し、ニュートン法で双曲線異常を解いてスイングバイ後の位置と速度を求めます。木星から海王星まで順につないで計算し、比軌道エネルギーが保存されているかも確認します。
-                                </p>
-                                <p class="card-note">
-                                    実行すると、スイングバイ前後の比軌道エネルギーの差が最大でも約10<sup>-13</sup> km<sup>2</sup>/s<sup>2</sup>
-                                    とごく小さく、エネルギーが保存されていることが確認できます。
                                 </p>
                             </div>
                         </div>
 
-                        <div class="pdf-actions">
-                            <button type="button" class="pdf-btn pdf-download" data-action="copy">
+                        <div class="action-row">
+                            <button type="button" class="btn btn-secondary" data-action="copy">
                                 <span aria-hidden="true">⧉</span>
                                 コードをコピー
                             </button>
-                            <a href="./py/swing-by_calculate.py" class="pdf-btn pdf-download"
+                            <a href="./py/swing-by_calculate.py" class="btn btn-secondary"
                                 download="swing-by_calculate.py">
                                 <span aria-hidden="true">↓</span>
-                                .py をダウンロード
+                               ダウンロード
                             </a>
                         </div>
 
                         <!-- 「コピーしました」の表示専用（script.js が書き換えます。説明文は入れない） -->
                         <p class="code-status" role="status" aria-live="polite"></p>
 
-                        <details class="pdf-preview">
+                        <details class="disclosure">
                             <summary>コードを表示</summary>
                             <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
                         </details>
                     </article>
 
                     <!-- プログラム 3 -->
-                    <article class="pdf-card code-card" data-code-card data-id="3" data-short="③ 差の計算版"
+                    <article class="content-card code-card" data-code-card data-id="3" data-short="③ 差の計算版"
                         data-src="./py/swing-by_compare.py" data-requires="1,2">
-                        <div class="pdf-card-header">
-                            <span class="pdf-badge">PY</span>
-                            <div class="pdf-card-info">
+                        <div class="content-card-header">
+                            <span class="content-badge">PY</span>
+                            <div class="content-card-info">
                                 <h4>③ 差の計算版（速度のちがいを計算）</h4>
                                 <p>①と②を読み込み、惑星ごとに「速度ベクトルの差の大きさ」と「速さの差」をスイングバイの直前・直後で計算します。計算に使ったシミュレーションの時間も合わせて表示します。
                                 </p>
@@ -172,20 +180,20 @@
                             </div>
                         </div>
 
-                        <div class="pdf-actions">
-                            <button type="button" class="pdf-btn pdf-download" data-action="copy">
+                        <div class="action-row">
+                            <button type="button" class="btn btn-secondary" data-action="copy">
                                 <span aria-hidden="true">⧉</span>
                                 コードをコピー
                             </button>
-                            <a href="./py/swing-by_compare.py" class="pdf-btn pdf-download"
+                            <a href="./py/swing-by_compare.py" class="btn btn-secondary"
                                 download="swing-by_compare.py">
                                 <span aria-hidden="true">↓</span>
-                                .py をダウンロード
+                               ダウンロード
                             </a>
                         </div>
                         <p class="code-status" role="status" aria-live="polite"></p>
 
-                        <details class="pdf-preview">
+                        <details class="disclosure">
                             <summary>コードを表示</summary>
                             <pre class="code-block" tabindex="0"><code>読み込み中…</code></pre>
                         </details>
@@ -201,13 +209,13 @@
             <div class="container">
                 <h3 class="category-title">実行結果を比べる</h3>
 
-                <p class="pdf-description">
+                <p class="section-description">
                     ①と②を続けて実行して並べ、③が速度の差を表にします。まず「速度のみ」で見比べて、そのあと「詳細」に切り替えて中身を確認してください。
                 </p>
 
                 <div class="compare-toolbar">
-                    <div class="pdf-actions compare-actions">
-                        <button type="button" class="pdf-btn pdf-view" id="runBoth">
+                    <div class="action-row compare-actions">
+                        <button type="button" class="btn btn-primary" id="runBoth">
                             <span aria-hidden="true">▶</span>
                             <span id="runBothLabel">①と②を実行して比較</span>
                         </button>
@@ -239,6 +247,21 @@
                             <pre class="compare-out" tabindex="0">まだ実行されていません。</pre>
                         </div>
                     </div>
+
+                    <article class="content-card check-card">
+                        <div class="content-card-header">
+                            <span class="content-badge">CHECK</span>
+                            <div class="content-card-info">
+                                <h4>②の計算結果の確認ポイント</h4>
+                                <p>
+                                    ②の軌道計算版では、スイングバイの前後で比軌道エネルギーが保存されているかを確認できます。
+                                </p>
+                                <p class="card-note">
+                                    実行結果では、前後の比軌道エネルギーの差は最大でも約10⁻¹³ km<sup>2</sup>/s<sup>2</sup>とごく小さく、エネルギーが保存されていることが確認できます。
+                                </p>
+                            </div>
+                        </div>
+                    </article>
 
                     <div class="compare-diff" id="compareDiff" hidden>
                         <h4 class="compare-diff-title">速度のちがい<small>② が ① からどれだけずれたか（単位 km/s）</small></h4>
@@ -272,6 +295,12 @@
                         </div>
                         <div class="diff-final" id="diffFinal" hidden></div>
 
+                        <div class="share-card share-result" data-share-scope="result" hidden>
+                            <p class="share-title">この結果をシェア</p>
+                            <blockquote class="share-preview" data-share-preview></blockquote>
+                            <div class="share-actions"><a class="share-btn share-x" data-share-target="x" href="https://x.com/intent/post" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>Xでポスト</span></a><a class="share-btn share-line" data-share-target="line" href="https://line.me/R/share" target="_blank" rel="noopener noreferrer"><span>LINEで送る</span></a><button type="button" class="share-btn share-ghost" data-share-target="copy"><span aria-hidden="true">⧉</span><span>リンクをコピー</span></button><button type="button" class="share-btn share-ghost" data-share-target="native" hidden><span aria-hidden="true">↗</span><span>その他のアプリで共有</span></button></div>
+                        </div>
+
                         <div class="diff-guide">
                             <h5 class="diff-guide-title">表の読み方</h5>
                             <p class="diff-guide-intro">
@@ -290,7 +319,7 @@
                                     <dd>この表では、計算期間の開始時刻を「直前」、終了時刻を「直後」として表示しています。</dd>
                                 </div>
                             </dl>
-                            <details class="pdf-preview diff-more">
+                            <details class="disclosure diff-more">
                                 <summary>式と具体例でくわしく見る</summary>
                                 <div class="diff-detail-content">
                                     <section class="diff-detail-block">
@@ -334,7 +363,7 @@
                             </details>
                         </div>
 
-                        <details class="pdf-preview">
+                        <details class="disclosure">
                             <summary>③の実行結果（くわしい数値）を表示</summary>
                             <pre class="code-output diff-out" id="diffText" tabindex="0"></pre>
                         </details>
@@ -348,35 +377,35 @@
             <div class="container">
                 <div class="pdf-section">
                     <h3 class="category-title">おまけ：ラグランジュ点の計算（PDF）</h3>
-                    <p class="pdf-description">
+                    <p class="section-description">
                         ラグランジュ点とは、2つの天体の重力と遠心力が釣り合う5つの点のことです。ラグランジュ点を求める計算方法についてまとめた資料です。
                     </p>
 
-                    <div class="pdf-list">
+                    <div class="card-list">
 
                         <!-- TODO: PDFを ./PDF/ に置き、ファイル名・タイトル・説明を書き換えてください -->
-                        <article class="pdf-card">
-                            <div class="pdf-card-header">
-                                <span class="pdf-badge">PDF</span>
-                                <div class="pdf-card-info">
+                        <article class="content-card">
+                            <div class="content-card-header">
+                                <span class="content-badge">PDF</span>
+                                <div class="content-card-info">
                                     <h4>ラグランジュ点の計算</h4>
                                     <p>ラグランジュ点の厳密解と近似解についての資料です。物理学Aのレポート課題として作成しました（担当教員に掲載許可を得ています）。</p>
                                 </div>
                             </div>
 
-                            <div class="pdf-actions">
-                                <a href="./PDF/Lagrange_Point.pdf" class="pdf-btn pdf-view" target="_blank" rel="noopener">
+                            <div class="action-row">
+                                <a href="./PDF/Lagrange_Point.pdf" class="btn btn-primary" target="_blank" rel="noopener">
                                     <span aria-hidden="true">↗</span>
                                     ブラウザで閲覧
                                 </a>
 
-                                <a href="./PDF/Lagrange_Point.pdf" class="pdf-btn pdf-download" download="Lagrange_Point.pdf">
+                                <a href="./PDF/Lagrange_Point.pdf" class="btn btn-secondary" download="Lagrange_Point.pdf">
                                     <span aria-hidden="true">↓</span>
                                     ダウンロード
                                 </a>
                             </div>
 
-                            <details class="pdf-preview">
+                            <details class="disclosure">
                                 <summary>ページ内でプレビュー</summary>
                                 <div class="pdf-viewer">
                                     <iframe src="./PDF/Lagrange_Point.pdf" title="Lagrange_Point.pdf" loading="lazy"></iframe>
@@ -384,14 +413,32 @@
                             </details>
                         </article>
 
-                        <!-- PDF資料を増やす場合は、ここにpdf-cardを追加 -->
+                        <!-- PDF資料を増やす場合は、ここにcontent-cardを追加 -->
 
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- シェア -->
+        <section class="section section-tight" id="share">
+            <div class="container">
+                <div class="share-card" data-share-scope="page">
+                    <h3 class="category-title">この展示をシェア</h3>
+                    <p class="section-description">ブラウザ上でPythonが動く展示です。ボタンを押すと、投稿文があらかじめ入力された状態で開きます（投稿前に編集できます）。</p>
+                    <blockquote class="share-preview" data-share-preview></blockquote>
+                    <div class="share-actions"><a class="share-btn share-x" data-share-target="x" href="https://x.com/intent/post" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>Xでポスト</span></a><a class="share-btn share-line" data-share-target="line" href="https://line.me/R/share" target="_blank" rel="noopener noreferrer"><span>LINEで送る</span></a><button type="button" class="share-btn share-ghost" data-share-target="copy"><span aria-hidden="true">⧉</span><span>リンクをコピー</span></button><button type="button" class="share-btn share-ghost" data-share-target="native" hidden><span aria-hidden="true">↗</span><span>その他のアプリで共有</span></button></div>
+                </div>
+            </div>
+        </section>
+
     </main>
+
+    <footer class="site-footer">
+        <p><a href="https://study.kikuchan-code.workers.dev/">S.K. Base Study Hub</a>　高専生の基礎学習をサポート</p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <button id="toTopBtn" class="to-top-btn" title="上へ戻る" aria-label="ページの先頭へ戻る">
         <span aria-hidden="true" class="to-top-icon"></span>

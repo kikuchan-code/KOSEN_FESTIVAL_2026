@@ -470,7 +470,7 @@ section[id] {
         transition: none !important;
     }
 
-    button.pdf-btn.is-running::before {
+    button.btn.is-running::before {
         animation: none;
     }
 }
@@ -479,26 +479,26 @@ section[id] {
 
 
 /* =========================
-   PDF Materials
+   Cards / Buttons / PDF section（カード・ボタン・折りたたみ・PDF資料）
 ========================= */
 
 .pdf-section {
     margin-top: 36px;
 }
 
-.pdf-description {
+.section-description {
     margin: 8px 0 20px;
     color: #555;
     line-height: 1.8;
 }
 
-.pdf-list {
+.card-list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 16px;
 }
 
-.pdf-card {
+.content-card {
     min-width: 0;
     padding: 22px;
     background: #fff;
@@ -510,19 +510,19 @@ section[id] {
 }
 
 @media (hover: hover) {
-    .pdf-card:hover {
+    .content-card:hover {
         border-color: #b8bbe0;
         box-shadow: 0 8px 24px rgba(35, 39, 85, 0.09);
     }
 }
 
-.pdf-card-header {
+.content-card-header {
     display: flex;
     align-items: flex-start;
     gap: 14px;
 }
 
-.pdf-badge {
+.content-badge {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -537,11 +537,11 @@ section[id] {
     font-weight: 700;
 }
 
-.pdf-card-info {
+.content-card-info {
     min-width: 0;
 }
 
-.pdf-card-info h4 {
+.content-card-info h4 {
     margin: 0 0 8px;
     color: #30335f;
     font-size: 1.05rem;
@@ -549,7 +549,7 @@ section[id] {
     overflow-wrap: anywhere;
 }
 
-.pdf-card-info p {
+.content-card-info p {
     margin: 0;
     color: #666;
     font-size: 0.92rem;
@@ -557,7 +557,7 @@ section[id] {
 }
 
 /* カード内の補足（常時表示するメモ） */
-.pdf-card-info .card-note {
+.content-card-info .card-note {
     position: relative;
     margin-top: 12px;
     padding: 10px 14px 10px 38px;
@@ -569,7 +569,7 @@ section[id] {
     border-radius: 8px;
 }
 
-.pdf-card-info .card-note::before {
+.content-card-info .card-note::before {
     content: "✓";
     position: absolute;
     left: 14px;
@@ -578,14 +578,14 @@ section[id] {
     color: #3da35d;
 }
 
-.pdf-actions {
+.action-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 20px;
 }
 
-.pdf-btn {
+.btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -603,41 +603,41 @@ section[id] {
                 color 0.2s ease;
 }
 
-.pdf-view {
+.btn-primary {
     color: #fff;
     background: #46487c;
 }
 
 @media (hover: hover) {
-    .pdf-view:hover {
+    .btn-primary:hover {
         background: #363862;
     }
 }
 
-.pdf-download {
+.btn-secondary {
     color: #46487c;
     background: #fff;
 }
 
 @media (hover: hover) {
-    .pdf-download:hover {
+    .btn-secondary:hover {
         background: #f0f1fb;
     }
 }
 
-.pdf-btn:focus-visible,
-.pdf-preview summary:focus-visible {
+.btn:focus-visible,
+.disclosure summary:focus-visible {
     outline: 3px solid #8c91e8;
     outline-offset: 3px;
 }
 
-.pdf-preview {
+.disclosure {
     margin-top: 18px;
     border-top: 1px solid #e7e8f0;
     padding-top: 14px;
 }
 
-.pdf-preview summary {
+.disclosure summary {
     padding-block: 10px;
     color: #46487c;
     cursor: pointer;
@@ -664,19 +664,19 @@ section[id] {
 }
 
 @media (max-width: 600px) {
-    .pdf-card {
+    .content-card {
         padding: 16px;
     }
 
-    .pdf-card-header {
+    .content-card-header {
         gap: 10px;
     }
 
-    .pdf-actions {
+    .action-row {
         flex-direction: column;
     }
 
-    .pdf-btn {
+    .btn {
         width: 100%;
         min-height: 48px;
     }
@@ -757,13 +757,13 @@ section[id] {
     border-radius: 8px;
 }
 
-/* ボタン（button要素でも .pdf-btn と同じ見た目に） */
-button.pdf-btn {
+/* ボタン（button要素でも .btn と同じ見た目に） */
+button.btn {
     font-family: inherit;
     cursor: pointer;
 }
 
-button.pdf-btn:disabled {
+button.btn:disabled {
     opacity: .6;
     cursor: progress;
 }
@@ -843,7 +843,7 @@ button.pdf-btn:disabled {
     to { transform: rotate(360deg); }
 }
 
-button.pdf-btn.is-running::before {
+button.btn.is-running::before {
     content: "";
     flex-shrink: 0;
     width: 14px;
@@ -854,7 +854,7 @@ button.pdf-btn.is-running::before {
     animation: btn-spin .8s linear infinite;
 }
 
-button.pdf-btn.is-running > [aria-hidden="true"] {
+button.btn.is-running > [aria-hidden="true"] {
     display: none;
 }
 
@@ -869,14 +869,14 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
 /* 見出し・説明文の折り返しを自然に */
 .section-title,
 .category-title,
-.pdf-card-info h4 {
+.content-card-info h4 {
     text-wrap: balance;
     word-break: auto-phrase;
 }
 
-.pdf-description,
+.section-description,
 .note-box,
-.pdf-card-info p,
+.content-card-info p,
 .code-footnote {
     word-break: auto-phrase;
     overflow-wrap: anywhere;
@@ -904,7 +904,7 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
         font-size: 1.2rem;
     }
 
-    .pdf-description {
+    .section-description {
         margin: 8px 0 16px;
         font-size: .95rem;
     }
@@ -935,42 +935,42 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
     }
 
     /* --- カード：バッジを上に出して本文の幅を確保 --- */
-    .pdf-card {
+    .content-card {
         padding: 16px;
         border-radius: 12px;
     }
 
-    .pdf-card-header {
+    .content-card-header {
         flex-direction: column;
         gap: 10px;
     }
 
-    .pdf-badge {
+    .content-badge {
         min-width: 44px;
         height: 30px;
         font-size: .75rem;
     }
 
-    .pdf-card-info h4 {
+    .content-card-info h4 {
         margin-bottom: 6px;
         font-size: 1.02rem;
     }
 
-    .pdf-card-info p {
+    .content-card-info p {
         font-size: .93rem;
     }
 
-    .pdf-card-info .card-note {
+    .content-card-info .card-note {
         margin-top: 10px;
         padding: 10px 12px 10px 34px;
         font-size: .86rem;
     }
 
-    .pdf-card-info .card-note::before {
+    .content-card-info .card-note::before {
         left: 12px;
     }
 
-    .pdf-actions {
+    .action-row {
         gap: 8px;
         margin-top: 16px;
     }
@@ -999,7 +999,7 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
 
     /* iOS Safari はiframe内のPDFを1ページ目しか表示できないため、
        ページ内プレビューを隠して「ブラウザで閲覧」に誘導する */
-    .pdf-preview:has(.pdf-viewer) {
+    .disclosure:has(.pdf-viewer) {
         display: none;
     }
 
@@ -1018,7 +1018,7 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
         font-size: .78rem;
     }
 
-    .pdf-btn {
+    .btn {
         padding-inline: 12px;
         font-size: .9rem;
     }
@@ -1383,18 +1383,18 @@ button.pdf-btn.is-running > [aria-hidden="true"] {
 /* ボタン類：ダブルタップ拡大を防ぎ、タップの反応を素早く */
 button,
 summary,
-.pdf-btn {
+.btn {
     touch-action: manipulation;
 }
 
 /* 情報メモ（青系）：③の「同じフォルダに置く」案内 */
-.pdf-card-info .card-note.card-note-info {
+.content-card-info .card-note.card-note-info {
     color: #1d4a7a;
     background: #f0f6fd;
     border-color: #cfe0f3;
 }
 
-.pdf-card-info .card-note.card-note-info::before {
+.content-card-info .card-note.card-note-info::before {
     content: "i";
     top: 10px;
     width: 16px;
@@ -1568,7 +1568,7 @@ summary,
     }
 
     /* 折りたたみ・ボタンを指で押しやすく */
-    .pdf-preview summary {
+    .disclosure summary {
         display: flex;
         align-items: center;
         min-height: 44px;
@@ -1679,7 +1679,7 @@ body {
         text-align: center;
     }
 
-    .pdf-card {
+    .content-card {
         padding: 14px;
     }
 
@@ -1706,13 +1706,13 @@ body {
 }
 
 /* 折りたたみ・ボタンはPCでも押しやすい高さに */
-.pdf-preview summary {
+.disclosure summary {
     display: flex;
     align-items: center;
     min-height: 44px;
 }
 
-.pdf-btn,
+.btn,
 .compare-tab,
 .compare-pair {
     -webkit-tap-highlight-color: transparent;
@@ -1969,3 +1969,147 @@ body {
                 grid-template-columns: 1fr;
             }
         }
+
+
+/* ==========================================================================
+   Refinement（デザインの洗練・シェア）
+   ========================================================================== */
+
+:root { --header-height: 68px; --ink: #1b1d3a; --space: #0b0d24; }
+
+body { color: var(--ink); background: #fafaff; letter-spacing: .01em; }
+.header { background: rgba(255,255,255,.82); box-shadow: 0 1px 0 rgba(70,72,124,.08); }
+.header-inner { min-height: 68px; }
+.logo-title { font-size: 1.45rem; letter-spacing: .01em; }
+
+/* Hero：宇宙をイメージした背景 */
+.hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    padding-top: 28px; padding-bottom: 64px; color: #fff;
+    background:
+        radial-gradient(900px 480px at 85% -10%, rgba(79,85,216,.55), transparent 60%),
+        radial-gradient(700px 420px at -5% 105%, rgba(37,141,236,.32), transparent 60%),
+        linear-gradient(180deg, #0b0d24 0%, #151846 70%, #1c2060 100%);
+}
+.hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; opacity: .85;
+    background:
+        radial-gradient(1.5px 1.5px at 12% 22%, #fff, transparent), radial-gradient(1px 1px at 30% 70%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 55% 15%, #cfd4ff, transparent), radial-gradient(1px 1px at 72% 48%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 88% 80%, #fff, transparent), radial-gradient(1px 1px at 92% 18%, #cfd4ff, transparent),
+        radial-gradient(1px 1px at 8% 88%, #fff, transparent), radial-gradient(1px 1px at 44% 92%, #fff, transparent),
+        radial-gradient(1px 1px at 64% 33%, #fff, transparent), radial-gradient(1px 1px at 20% 50%, #cfd4ff, transparent);
+}
+.hero .breadcrumb, .hero .breadcrumb a { color: #aab0e8; }
+.hero .section-title { color: #fff; background: none; font-weight: 800; letter-spacing: .02em; }
+.hero .section-description { max-width: 46em; color: #d6d9f5; }
+.hero .section-description strong { color: #ffe08a; }
+.hero .run-cta-note { color: #aab0e8; }
+.hero .btn-primary { color: #23265a; background: #fff; border-color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.28); }
+.hero .run-cta-btn { border-radius: 999px; }
+
+/* 最接近日タイムライン（航路のイメージ） */
+.flyby-timeline { position: relative; margin-top: 32px; }
+.flyby-timeline li { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.16); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.flyby-timeline li:not(:last-child)::after { color: #9fa4ff; background: #1a1d52; }
+.flyby-planet { color: #fff; }
+.flyby-date { color: #b9bdf0; font-variant-numeric: tabular-nums; }
+.flyby-planet::before {
+    content: ""; display: inline-block; width: .72em; height: .72em; margin-right: .45em;
+    border-radius: 50%; background: var(--dot); box-shadow: 0 0 10px var(--dot);
+}
+.flyby-timeline li:nth-child(1) { --dot: #e0a465; }
+.flyby-timeline li:nth-child(2) { --dot: #f0d58a; }
+.flyby-timeline li:nth-child(3) { --dot: #8fe3e8; }
+.flyby-timeline li:nth-child(4) { --dot: #6f8dff; }
+
+/* 見出し・カード・ボタン */
+.category-title { margin-top: 2.4rem; font-size: 1.5rem; font-weight: 800; border-left: 0; padding-left: 0; }
+.category-title::before { content: ""; display: block; width: 36px; height: 4px; margin-bottom: 10px; border-radius: 4px; background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light)); }
+.content-card { border-radius: 18px; border-color: #e6e8f5; box-shadow: 0 2px 4px rgba(35,39,85,.04), 0 12px 32px rgba(35,39,85,.06); }
+.content-badge { color: #fff; background: linear-gradient(135deg, #46487c, #4f55d8); border-radius: 10px; letter-spacing: .06em; }
+.btn { border-radius: 999px; font-weight: 700; }
+.btn-primary { background: linear-gradient(135deg, #46487c, #4f55d8); border-color: transparent; }
+.note-box { border-radius: 14px; }
+.code-block { border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+.compare-out, .diff-final, .diff-guide, .diff-scroll { border-radius: 14px; }
+.compare-pairs, .compare-tabs { box-shadow: inset 0 0 0 1px #e1e3ef; }
+.diff-scroll { background: #fff; }
+
+/* シェア */
+.share-card {
+    padding: 28px; border-radius: 22px; color: #fff;
+    background: radial-gradient(600px 300px at 100% 0, rgba(79,85,216,.6), transparent 60%), linear-gradient(135deg, #12153a, #232873);
+    box-shadow: 0 16px 40px rgba(35,39,85,.22);
+}
+.share-card .category-title { margin-top: 0; color: #fff; }
+.share-card .section-description { color: #d6d9f5; }
+.share-title { margin: 0 0 10px; font-weight: 800; color: #fff; }
+.share-result { margin-top: 16px; padding: 18px 20px; }
+.share-result[hidden] { display: none; }
+.share-preview {
+    margin: 0 0 18px; padding: 12px 16px; white-space: pre-wrap; overflow-wrap: anywhere;
+    color: #e8eaff; font-size: .92rem; line-height: 1.8;
+    background: rgba(255,255,255,.08); border-left: 4px solid #ffcf6b; border-radius: 10px;
+}
+.share-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.share-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 22px;
+    border: 1px solid transparent; border-radius: 999px; font: inherit; font-size: .95rem; font-weight: 700;
+    cursor: pointer; text-align: center; transition: transform .15s ease, filter .15s ease;
+}
+.share-btn[hidden] { display: none; }
+.share-x { color: #fff; background: #000; border-color: rgba(255,255,255,.35); }
+.share-line { color: #fff; background: #06c755; }
+.share-ghost { color: #fff; background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.35); }
+.hero .hero-share { color: #fff; background: #000; border: 1px solid rgba(255,255,255,.4); min-height: 52px; padding-inline: 24px; }
+@media (hover: hover) { .share-btn:hover { transform: translateY(-2px); filter: brightness(1.12); } }
+.share-btn:focus-visible { outline: 3px solid #ffcf6b; outline-offset: 3px; }
+
+.site-footer { padding: 28px 16px calc(40px + env(safe-area-inset-bottom, 0px)); text-align: center; color: #666; font-size: .85rem; }
+.site-footer a { color: var(--color-main); font-weight: 700; }
+.toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 10000;
+    padding: 12px 20px; color: #fff; background: rgba(20,22,56,.94); border-radius: 999px; font-size: .9rem;
+    transform: translate(-50%, 20px); opacity: 0; pointer-events: none; transition: .25s ease;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* スマホ */
+@media (max-width: 600px) {
+    :root { --header-height: 60px; }
+    .header-inner { min-height: 60px; }
+    .hero { padding-top: 16px; padding-bottom: 44px; }
+
+    /* 最接近日は縦の航路にする */
+    .flyby-timeline { grid-template-columns: 1fr; gap: 10px; padding-left: 14px; }
+    .flyby-timeline::before { content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 2px; background: linear-gradient(#e0a465, #f0d58a, #8fe3e8, #6f8dff); border-radius: 2px; }
+    .flyby-timeline li { flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 16px; }
+    .flyby-timeline li:not(:last-child)::after { display: none; }
+    .flyby-timeline li:nth-child(2)::after { display: none; }
+    .flyby-date { font-size: .9rem; }
+
+    /* コピー／ダウンロードは2列で並べる */
+    .action-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .btn { padding-inline: 10px; }
+
+    .share-card { padding: 22px 18px; border-radius: 18px; }
+    .share-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .share-actions .share-x { grid-column: 1 / -1; }
+    .share-btn { padding-inline: 10px; font-size: .9rem; }
+    .hero .hero-share { width: 100%; }
+}
+
+
+/* ==========================================================================
+   確認ポイントカード（②の計算結果）
+   ========================================================================== */
+.check-card { margin-top: 20px; }
+.check-card .content-card-info h4 { margin-bottom: 6px; }
+
+/* スマホ：「①と②を実行して比較」ボタンを横幅いっぱいに */
+@media (max-width: 600px) {
+    .compare-actions { display: block; width: 100%; }
+    .compare-actions .btn { width: 100%; min-height: 54px; font-size: 1rem; }
+    .check-card { margin-top: 16px; }
+}
