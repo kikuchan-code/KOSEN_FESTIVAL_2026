@@ -594,7 +594,7 @@ if (toTopBtn) {
 
 (function () {
   const SHARE_CONFIG = {
-    hashtags: ['ボイジャー2号', 'スイングバイ', 'python', '公大高専祭', '公大高専祭2026'],
+    hashtags: ['ボイジャー2号', 'スイングバイ', 'Python', '公大高専祭', '公大高専祭2026'],
     // 展示ページ（この高専祭展示）
     festival: { label: '🚀 展示ページ', url: 'https://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/' },
     // 大元のサイト（null にすると投稿に含めません）。さりげなく添える程度にとどめる
