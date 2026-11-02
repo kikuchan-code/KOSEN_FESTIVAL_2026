@@ -600,9 +600,9 @@ if (toTopBtn) {
     // 大元のサイト（null にすると投稿に含めません）。さりげなく添える程度にとどめる
     site: { label: '制作｜S.K. Base Study Hub', url: 'https://study.kikuchan-code.workers.dev/' },
     // 本文（URLはここに書かず、上の festival / site に書く）
-    pageText: 'ボイジャー2号は、4つの惑星の重力を借りて太陽系の外へ向かいました。\nそのスイングバイを、ブラウザ上のPythonで再現。実測データと軌道計算が、どこまで重なるか見比べられます🚀',
+    pageText: '4つの惑星の重力を借りて旅したボイジャー2号。そのスイングバイを、ブラウザ上のPythonで再現しました。実測と計算を見比べられます🚀',
     // 実行結果を載せるときの本文（{a}=実測 {b}=計算 {d}=差）
-    resultText: '海王星を通過したあとのボイジャー2号の速さを、実測と計算で比べてみました🛰️\n実測 {a} km/s／計算 {b} km/s（差 {d}）\nどちらもブラウザ上のPythonです。'
+    resultText: '海王星通過後の速さを実測と計算で比べてみました🛰️\n実測 {a} km/s／計算 {b} km/s（差 {d}）'
   };
 
   const toastEl = document.getElementById('toast');
