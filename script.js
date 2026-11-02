@@ -589,10 +589,10 @@ if (toTopBtn) {
 
 (function () {
   const SHARE_CONFIG = {
-    hashtags: ['ボイジャー2号', 'Python', '高専祭'],
+    hashtags: ['ボイジャー2号', '総合課題実習3', '公大高専', '公大高専祭', '公大高専祭2026'],
     // Xの投稿の末尾に、さりげなく添える大元サイトの紹介（空文字にすると無効）
     siteLine: '📚 高専生の基礎学習サイト「S.K. Base Study Hub」\nhttps://study.kikuchan-code.workers.dev/',
-    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。'
+    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。\n【サイトはこちら】\nhttps://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/'
   };
 
   const pageUrl = () => location.origin + location.pathname.replace(/index\.html$/, '');

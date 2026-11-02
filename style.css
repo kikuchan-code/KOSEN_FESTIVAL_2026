@@ -1975,7 +1975,7 @@ body {
    Refinement（デザインの洗練・シェア）
    ========================================================================== */
 
-:root { --header-height: 68px; --ink: #1b1d3a; --space: #0b0d24; }
+:root { --header-height: 72px; --ink: #1b1d3a; --space: #0b0d24; }
 
 body { color: var(--ink); background: #fafaff; letter-spacing: .01em; }
 .header { background: rgba(255,255,255,.82); box-shadow: 0 1px 0 rgba(70,72,124,.08); }
@@ -2077,7 +2077,7 @@ body { color: var(--ink); background: #fafaff; letter-spacing: .01em; }
 
 /* スマホ */
 @media (max-width: 600px) {
-    :root { --header-height: 60px; }
+    :root { --header-height: 68px; }
     .header-inner { min-height: 60px; }
     .hero { padding-top: 16px; padding-bottom: 44px; }
 
