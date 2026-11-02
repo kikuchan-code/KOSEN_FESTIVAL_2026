@@ -584,18 +584,25 @@ if (toTopBtn) {
 
 // ==========================================
 // シェア（X / LINE / リンクコピー / 端末の共有）
-// 投稿文は下の SHARE_CONFIG で変更できます
+// 投稿文・リンク・ハッシュタグは下の SHARE_CONFIG で変更できます
+//
+// Xの投稿は「本文 → 展示ページ → 大元のサイト → ハッシュタグ」の順に、
+// すべて text にまとめて渡します（X の url / hashtags パラメータは使いません。
+// 使うとURLとタグが同じ行に連なってしまうため）。
+// 文字数の目安：Xは全角=2、URL=23として280まで。タグやラベルを増やすときは注意。
 // ==========================================
 
 (function () {
   const SHARE_CONFIG = {
     hashtags: ['ボイジャー2号', '総合課題実習3', '公大高専', '公大高専祭', '公大高専祭2026'],
-    // Xの投稿の末尾に、さりげなく添える大元サイトの紹介（空文字にすると無効）
-    siteLine: '📚 高専生の基礎学習サイト「S.K. Base Study Hub」\nhttps://study.kikuchan-code.workers.dev/',
-    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。\n【サイトはこちら】\nhttps://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/'
+    // 展示ページ（この高専祭展示）
+    festival: { label: '🚀 展示ページ', url: 'https://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/' },
+    // 大元のサイト（null にすると投稿に含めません）
+    site: { label: '📚 S.K. Base Study Hub', url: 'https://study.kikuchan-code.workers.dev/' },
+    // 本文（URLはここに書かず、上の festival / site に書く）
+    pageText: 'ボイジャー2号のスイングバイを、ブラウザ上のPythonで再現してみた🚀\n実測データと軌道計算を並べて比べられます。'
   };
 
-  const pageUrl = () => location.origin + location.pathname.replace(/index\.html$/, '');
   const toastEl = document.getElementById('toast');
   let toastTimer;
   const toast = msg => {
@@ -608,18 +615,61 @@ if (toTopBtn) {
 
   const tagText = () => SHARE_CONFIG.hashtags.map(t => '#' + t).join(' ');
 
+  const el = (tag, cls, text) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text != null) node.textContent = text;
+    return node;
+  };
+
   document.querySelectorAll('[data-share-scope]').forEach(scope => {
     const isResult = scope.dataset.shareScope === 'result';
-    const state = { text: SHARE_CONFIG.pageText, url: pageUrl() + (isResult ? '#compare' : '') };
+    const state = {
+      text: SHARE_CONFIG.pageText,
+      url: SHARE_CONFIG.festival.url + (isResult ? '#compare' : '')
+    };
     const preview = scope.querySelector('[data-share-preview]');
 
-    const xText = () => state.text + (SHARE_CONFIG.siteLine ? '\n\n' + SHARE_CONFIG.siteLine : '');
-    const xUrl = () => 'https://x.com/intent/post?text=' + encodeURIComponent(xText()) +
-      '&url=' + encodeURIComponent(state.url) + '&hashtags=' + encodeURIComponent(SHARE_CONFIG.hashtags.join(','));
+    // 投稿に載せるリンク（展示ページ → 大元のサイト の順）
+    const links = () => [
+      { label: SHARE_CONFIG.festival.label, url: state.url },
+      ...(SHARE_CONFIG.site ? [SHARE_CONFIG.site] : [])
+    ];
+
+    // Xの投稿全文：ブロックごとに空行を入れて読みやすくする
+    const xText = () => [
+      state.text,
+      links().map(l => l.label + '\n' + l.url).join('\n\n'),
+      tagText()
+    ].filter(Boolean).join('\n\n');
+
+    const xUrl = () => 'https://x.com/intent/post?text=' + encodeURIComponent(xText());
     const lineUrl = () => 'https://line.me/R/share?text=' + encodeURIComponent(state.text + '\n' + state.url);
 
+    // プレビュー：本文 / リンク2つ / ハッシュタグ を分けて表示する
+    function renderPreview() {
+      if (!preview) return;
+      preview.replaceChildren();
+
+      preview.appendChild(el('p', 'share-preview-text', state.text));
+
+      const linkList = el('ul', 'share-preview-links');
+      links().forEach(l => {
+        const li = el('li', 'share-preview-link');
+        li.appendChild(el('span', 'share-preview-label', l.label));
+        li.appendChild(el('span', 'share-preview-url', l.url.replace(/^https?:\/\//, '')));
+        linkList.appendChild(li);
+      });
+      preview.appendChild(linkList);
+
+      const tagList = el('ul', 'share-tags');
+      tagList.setAttribute('aria-label', 'ハッシュタグ');
+      SHARE_CONFIG.hashtags.forEach(t => tagList.appendChild(el('li', null, '#' + t)));
+      preview.appendChild(tagList);
+    }
+
     function update() {
-      if (preview) preview.textContent = xText() + '\n' + tagText();
+      renderPreview();
       scope.querySelectorAll('[data-share-target="x"]').forEach(a => { a.href = xUrl(); });
       scope.querySelectorAll('[data-share-target="line"]').forEach(a => { a.href = lineUrl(); });
     }
@@ -649,7 +699,7 @@ if (toTopBtn) {
         const f = e.detail;
         if (!f || typeof f.speed_1 !== 'number') { scope.hidden = true; return; }
         const sign = f.ds > 0 ? '+' : f.ds < 0 ? '−' : '';
-        state.text = 'ボイジャー2号が海王星を通過したあとの速さ\n' +
+        state.text = 'ボイジャー2号が海王星通過後の速さ\n' +
           `実測 ${f.speed_1.toFixed(2)} km/s／計算 ${f.speed_2.toFixed(2)} km/s（差 ${sign}${Math.abs(f.ds).toFixed(2)}）\n` +
           'ブラウザ上のPythonで比べてみた🛰️';
         update();
