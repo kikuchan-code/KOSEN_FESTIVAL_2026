@@ -10,7 +10,7 @@
     <link rel="canonical" href="https://kikuchan-code.github.io/KOSEN_FESTIVAL_2026/" />
 
     <title>ボイジャー2号の軌道計算｜高専祭展示 | S.K. Base Study Hub</title>
-    <meta name="description" content="ボイジャー2号が木星・土星・天王星・海王星で行ったスイングバイを、Pythonで再現。コードの閲覧・コピー・ブラウザ上での実行ができる高専祭展示ページです。">
+    <meta name="description" content="ボイジャー2号が木星・土星・天王星・海王星で行ったスイングバイを、Pythonで再現。高専祭の展示「イケナイ太陽」（教養棟3F特別教室・オンライン）のページです。コードの閲覧・コピー・ブラウザ上での実行ができます。">
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="S.K. Base Study Hub" />
@@ -73,6 +73,40 @@
                     総合課題実習3の課題として、わたしたち「チームK」はボイジャー2号の軌道を調べました。ボイジャー2号は、木星・土星・天王星・海王星の重力で軌道を変えながら旅をしました（スイングバイ）。
                     この展示では、それを3つのPythonプログラムで再現して結果を比べます。コードは読む・コピーする・ダウンロードするだけでなく、<strong>ブラウザの上でそのまま実行</strong>できます。
                 </p>
+
+                <!-- 高専祭 展示情報 -->
+                <aside class="event-info" aria-labelledby="eventInfoTitle">
+                    <h3 class="event-info-title" id="eventInfoTitle">高専祭 展示情報</h3>
+                    <dl class="event-info-list">
+                        <div class="event-info-item">
+                            <dt>展示名</dt>
+                            <dd class="event-info-name">イケナイ太陽</dd>
+                        </div>
+                        <div class="event-info-item">
+                            <dt>展示場所</dt>
+                            <dd>
+                                <ul class="event-info-places">
+                                    <li>
+                                        <span class="event-place-tag">会場</span>
+                                        <span class="event-place-name">教養棟3F特別教室</span>
+                                    </li>
+                                    <li>
+                                        <span class="event-place-tag event-place-online">ONLINE</span>
+                                        <span class="event-place-name">オンライン<small>（このページ）</small></span>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                        <div class="event-info-item">
+                            <dt>高専祭の詳細</dt>
+                            <dd>
+                                <a class="event-info-link" href="https://www.omu.ac.jp/ct/news/17" target="_blank" rel="noopener noreferrer">
+                                    公式サイトで見る<span aria-hidden="true"> ↗</span><span class="visually-hidden">（新しいタブで開きます）</span>
+                                </a>
+                            </dd>
+                        </div>
+                    </dl>
+                </aside>
 
                 <div class="run-cta" data-share-scope="page">
                     <a href="#compare" class="btn btn-primary run-cta-btn">
@@ -436,8 +470,24 @@
 
     </main>
 
-    <footer class="site-footer">
-        <p><a href="https://study.kikuchan-code.workers.dev/">S.K. Base Study Hub</a>　高専生の基礎学習をサポート</p>
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-logo">
+                <span class="footer-logo-title"><em class="footer-logo-em">S.K.</em> Base Study Hub</span>
+                <span class="footer-logo-sub">高専生の基礎学習をサポート</span>
+            </div>
+            <nav class="footer-nav" aria-label="フッターメニュー">
+                <ul>
+                    <li><a href="#overview">展示の概要</a></li>
+                    <li><a href="#programs">プログラム</a></li>
+                    <li><a href="#compare">Pythonを実行</a></li>
+                    <li><a href="#pdf">資料（PDF）</a></li>
+                    <li><a href="#share">シェア</a></li>
+                    <li><a href="https://study.kikuchan-code.workers.dev/">ホームにもどる</a></li>
+                </ul>
+            </nav>
+            <p class="footer-copy">&copy; 2026 S.K. Base Study Hub</p>
+        </div>
     </footer>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

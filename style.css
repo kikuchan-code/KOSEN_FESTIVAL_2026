@@ -2400,18 +2400,6 @@ body {
 }
 
 
-.site-footer {
-    padding: 28px 16px calc(40px + env(safe-area-inset-bottom, 0px));
-    text-align: center;
-    color: #666;
-    font-size: .85rem;
-}
-
-.site-footer a {
-    color: var(--color-main);
-    font-weight: 700;
-}
-
 .toast {
     position: fixed;
     left: 50%;
@@ -2560,5 +2548,415 @@ body {
 
     .check-card {
         margin-top: 16px;
+    }
+}
+
+/* ==========================================================================
+   高専祭 展示情報（ヒーロー内）
+   ========================================================================== */
+.event-info {
+    max-width: 52em;
+    margin-top: 24px;
+    padding: 18px 22px 20px;
+    color: #fff;
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: 16px;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.event-info-title {
+    margin: 0 0 12px;
+    color: #aab0e8;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+}
+
+.event-info-list {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.7fr) minmax(0, .9fr);
+    gap: 16px 32px;
+    align-items: start;
+    margin: 0;
+}
+
+.event-info-item dt {
+    margin: 0 0 4px;
+    color: #aab0e8;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+}
+
+.event-info-item dd {
+    margin: 0;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.event-info-name {
+    color: #ffe08a !important;
+    font-size: 1.35rem;
+    letter-spacing: .04em;
+}
+
+.event-info-places {
+    display: grid;
+    gap: 8px;
+}
+
+.event-info-places li {
+    display: grid;
+    grid-template-columns: 5.4em minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px 8px 8px;
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 12px;
+}
+
+.event-place-tag {
+    padding: 3px 0;
+    color: #d6d9f5;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    line-height: 1.5;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 999px;
+}
+
+.event-place-online {
+    color: #0b0d24;
+    background: #8fe3e8;
+    border-color: #8fe3e8;
+}
+
+.event-place-name {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.event-place-name small {
+    margin-left: .35em;
+    color: #b9bdf0;
+    font-size: .78rem;
+    font-weight: 500;
+}
+
+.event-info-link {
+    display: inline-block;
+    padding-bottom: 1px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, .55);
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.event-info-link:focus-visible {
+    outline: 2px solid #ffe08a;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+@media (hover: hover) {
+    .event-info-link:hover {
+        color: #ffe08a;
+        border-color: #ffe08a;
+    }
+}
+
+@media (max-width: 760px) {
+    .event-info-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 600px) {
+    .event-info {
+        margin-top: 20px;
+        padding: 16px 16px 18px;
+    }
+
+    .event-info-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .event-info-name {
+        font-size: 1.25rem;
+    }
+}
+
+
+/* ==========================================================================
+   ヘッダー統一（ハブサイト S.K. Base Study Hub と同じ見た目・太さにそろえる）
+   このブロックは必ずファイルの最後に置く（上にある古いヘッダー設定を上書きするため）
+   ========================================================================== */
+:root {
+    --header-height: 64px;
+}
+
+.header {
+    background: rgba(255, 255, 255, .92);
+    border-bottom: 1px solid #e4e6ee;
+    box-shadow: none;
+}
+
+.header-inner {
+    width: min(1120px, 100% - 40px);
+    height: 100%;
+    min-height: 0;
+    padding-block: 0;
+    gap: 16px;
+}
+
+.logo {
+    gap: 1px;
+}
+
+.logo-subtitle {
+    display: block;
+    color: #5a6072;
+    font-size: .68rem;
+    letter-spacing: .06em;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.logo-title {
+    color: #2f3170;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.nav-list {
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-list a {
+    display: inline-block;
+    padding-block: 6px;
+    color: #1f2230;
+    font-size: .9rem;
+}
+
+.nav-list a::after {
+    bottom: 0;
+}
+
+.hamburger {
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    padding: 14px 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hamburger span {
+    height: 2px;
+    border-radius: 2px;
+    background: #2f3170;
+}
+
+@media (max-width: 1200px) {
+    .nav {
+        right: 0;
+        width: min(80vw, 300px);
+        height: calc(100dvh - var(--header-height));
+        border-left: 1px solid #e4e6ee;
+        transform: translateX(100%);
+        transition: transform var(--transition), visibility var(--transition);
+    }
+
+    .nav.active {
+        transform: translateX(0);
+    }
+
+    .nav-list {
+        align-items: stretch;
+        padding: 12px 8px 32px;
+    }
+
+    .nav-list li+li {
+        border-top: 0;
+    }
+
+    .nav-list a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .nav-list a:active {
+        background: #f6f7fb;
+    }
+
+    .hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+}
+
+@media (max-width: 600px) {
+    .header-inner {
+        width: calc(100% - 32px);
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-subtitle {
+        font-size: .64rem;
+        letter-spacing: .03em;
+    }
+
+    .logo-title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .nav {
+        width: min(80vw, 300px);
+    }
+}
+
+@media (max-width: 360px) {
+    .header-inner {
+        width: calc(100% - 24px);
+    }
+
+    .logo-title {
+        font-size: 1rem;
+    }
+}
+
+/* 横向きスマホでもハブと同じ高さ・同じロゴ表示にする */
+@media (max-height: 480px) and (orientation: landscape) {
+    :root {
+        --header-height: 64px;
+    }
+
+    .header-inner {
+        min-height: 0;
+        padding-block: 0;
+    }
+
+    .logo-subtitle {
+        display: block;
+    }
+
+    .logo-title {
+        font-size: 1.2rem;
+    }
+}
+
+
+/* ==========================================================================
+   フッター統一（ハブサイトと同じ構成・見た目）
+   ========================================================================== */
+.footer {
+    color: #fff;
+    background: #2f3170;
+}
+
+.footer-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px 32px;
+    align-items: center;
+    padding-block: 36px calc(36px + env(safe-area-inset-bottom, 0px));
+}
+
+.footer-logo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.footer-logo-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.footer-logo-em {
+    font-style: normal;
+    color: #a8d3f8;
+}
+
+.footer-logo-sub {
+    font-size: .76rem;
+    opacity: .7;
+}
+
+.footer-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px 20px;
+}
+
+.footer-nav a {
+    display: inline-block;
+    padding-block: 4px;
+    font-size: .85rem;
+    opacity: .8;
+    transition: opacity var(--transition);
+}
+
+.footer-nav a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+.footer-copy {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .15);
+    font-size: .76rem;
+    opacity: .6;
+}
+
+@media (hover: hover) {
+    .footer-nav a:hover {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 720px) {
+    .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding-block: 32px calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .footer-nav ul {
+        justify-content: flex-start;
     }
 }
